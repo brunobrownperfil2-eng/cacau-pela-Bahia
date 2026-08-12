@@ -1,170 +1,600 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cacau pela Bahia - GeoPolítico</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cacau pela Bahia - GeoPolítico BA</title>
+    
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        html, body { height: 100%; margin: 0; padding: 0; }
-        
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; color: black !important; }
-        }
 
-        .modal { transition: opacity 0.25s ease, transform 0.25s ease; }
-        .modal-hidden { opacity: 0; pointer-events: none; transform: scale(0.95); }
+    <style>
+        html, body { height: 100%; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .modal { transition: opacity 0.2s ease; }
+        .modal-hidden { opacity: 0; pointer-events: none; }
+        
+        #splashScreen {
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .splash-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
     </style>
 </head>
-<body class="bg-amber-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between relative">
+<body class="bg-slate-900 text-slate-100 flex flex-col h-screen overflow-hidden">
 
-    <!-- Cabeçalho -->
-    <header class="bg-amber-900 text-amber-50 p-4 shadow-md flex justify-between items-center no-print">
-        <div class="flex items-center space-x-3">
-            <i class="fa-solid font-bold text-2xl text-amber-400 fa-tree"></i>
-            <div>
-                <h1 class="text-xl font-bold tracking-wide">Cacau pela Bahia</h1>
-                <p class="text-xs text-amber-200">Painel de Gestão & Apoio Político</p>
+    <!-- TELA DE ABERTURA (SPLASH SCREEN) -->
+    <div id="splashScreen" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-between p-6 text-center select-none">
+        <div></div>
+        
+        <div class="flex flex-col items-center space-y-4 max-w-xs animate-pulse">
+            <div class="relative bg-white/5 p-4 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-sm flex justify-center">
+                <svg width="240" height="100" viewBox="0 0 280 110" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto drop-shadow-lg">
+                    <rect x="10" y="30" width="220" height="50" rx="12" fill="#0047AB"/>
+                    <rect x="20" y="72" width="120" height="6" rx="3" fill="#C8102E"/>
+                    <text x="18" y="68" font-family="Impact, sans-serif" font-size="34" fill="#FFFFFF" font-weight="900">CACAU</text>
+                    <text x="125" y="44" font-family="'Brush Script MT', cursive, sans-serif" font-size="28" fill="#FFCC00" font-style="italic">pela</text>
+                    <text x="122" y="70" font-family="Impact, sans-serif" font-size="28" fill="#00D2FF" font-weight="900">BAHIA</text>
+                    <g transform="translate(200, 32)">
+                        <path d="M25 0C38.8 0 50 11.2 50 25C50 38.8 38.8 50 25 50C19.5 50 14.5 48.2 10.5 45.2L0 50L4.8 39.5C1.8 35.5 0 30.5 0 25C0 11.2 11.2 0 25 0Z" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>
+                        <path d="M25 33S15 25 15 18A5 5 0 0 1 25 15A5 5 0 0 1 35 18C35 25 25 33 25 33Z" fill="#C8102E"/>
+                        <path d="M15 17H35V21H15Z" fill="#FFFFFF"/>
+                        <path d="M15 23H35V27H15Z" fill="#0047AB"/>
+                        <polygon points="15,15 22,20 15,25" fill="#0047AB"/>
+                        <polygon points="17,18 19,20 17,22" fill="#FFFFFF"/>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="space-y-1">
+                <p class="text-xs font-semibold uppercase tracking-widest text-slate-400">Liderança Regional</p>
+                <h2 class="text-xl font-black text-amber-400 tracking-wide drop-shadow">Bruno de Oliveira</h2>
             </div>
         </div>
-        <button onclick="abrirModalPDF()" class="bg-amber-600 hover:bg-amber-500 text-white text-sm px-3 py-1.5 rounded-lg flex items-center gap-2 shadow transition">
-            <i class="fa-solid fa-file-pdf"></i> Imprimir / PDF
-        </button>
-    </header>
 
-    <!-- Conteúdo Principal -->
-    <main class="max-w-4xl w-full mx-auto p-4 flex-grow relative">
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-amber-200/60 mb-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4 mb-4">
-                <div>
-                    <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Projeto Regional</span>
-                    <h2 class="text-2xl font-bold text-slate-900 mt-1">Relatório de Atividades & Mapeamento</h2>
-                </div>
+        <div class="w-full max-w-xs space-y-3 pb-4">
+            <div class="flex items-center justify-center gap-2 text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 py-2 rounded-xl">
+                <i class="fa-solid fa-check-to-slot"></i>
+                <span>SISTEMA ELEIÇÕES 2026</span>
             </div>
 
-            <p class="text-slate-600 text-sm leading-relaxed mb-4">
-                Plataforma de acompanhamento, mapeamento e prestação de contas das ações do projeto <strong>Cacau pela Bahia</strong>.
-            </p>
-
-            <!-- Cards de Ação Rápidas -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 no-print">
-                <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
-                    <i class="fa-solid fa-users text-amber-700 text-xl mb-2"></i>
-                    <h3 class="font-bold text-slate-800 text-base">Apoio Regional</h3>
-                    <p class="text-xs text-slate-500 mt-1">Registro de contatos e lideranças locais parceiras.</p>
-                </div>
-                <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
-                    <i class="fa-solid fa-map-location-dot text-amber-700 text-xl mb-2"></i>
-                    <h3 class="font-bold text-slate-800 text-base">Mapeamento</h3>
-                    <p class="text-xs text-slate-500 mt-1">Propostas e demandas prioritárias por município.</p>
-                </div>
-                <div role="button" onclick="abrirModalPDF()" class="bg-amber-800 text-white p-4 rounded-xl hover:bg-amber-700 transition cursor-pointer flex flex-col justify-between shadow-sm">
-                    <div>
-                        <i class="fa-solid fa-print text-amber-300 text-xl mb-2"></i>
-                        <h3 class="font-bold text-base">Gerar PDF / Imprimir</h3>
-                        <p class="text-xs text-amber-200 mt-1">Visualizar documento para impressão.</p>
-                    </div>
-                    <span class="text-xs font-semibold text-amber-300 mt-3 inline-block">Abrir Pré-visualização &rarr;</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Tabela -->
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-amber-200/60">
-            <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-list-check text-amber-700"></i> Resumo de Demandas Prioritárias
-            </h3>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-semibold">
-                            <th class="py-3 px-4">Região / Município</th>
-                            <th class="py-3 px-4">Demanda Principal</th>
-                            <th class="py-3 px-4">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 text-slate-700">
-                        <tr>
-                            <td class="py-3 px-4 font-medium">Sul da Bahia</td>
-                            <td class="py-3 px-4">Incentivo à Cacauicultura & Agricultura Familiar</td>
-                            <td class="py-3 px-4"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold">Em Andamento</span></td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-4 font-medium">Litoral Sul</td>
-                            <td class="py-3 px-4">Infraestrutura e Melhoria de Estradas Rurais</td>
-                            <td class="py-3 px-4"><span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full font-semibold">Mapeado</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
-
-    <!-- Rodapé -->
-    <footer class="text-center p-4 text-xs text-slate-500 no-print border-t border-amber-200/40 bg-white/50 mt-6">
-        <p>© Cacau pela Bahia</p>
-    </footer>
-
-    <!-- MODAL DE VISUALIZAÇÃO COM BOTÃO DE VOLTAR -->
-    <div id="modalPDF" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 modal modal-hidden no-print">
-        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            
-            <!-- Barra Superior do Modal (Com o Botão Voltar) -->
-            <div class="bg-amber-900 text-white px-6 py-4 flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-file-pdf text-amber-400 text-lg"></i>
-                    <h3 class="font-bold text-base">Visualização do Documento</h3>
-                </div>
-                <!-- BOTÃO VOLTAR PARA O MENU INICIAL -->
-                <button onclick="fecharModalPDF()" class="bg-amber-800 hover:bg-amber-700 text-amber-100 px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-arrow-left"></i> Voltar ao Menu
-                </button>
-            </div>
-
-            <!-- Conteúdo da Prévia -->
-            <div class="p-6 overflow-y-auto space-y-4 text-slate-700 relative flex-grow">
-                <div class="border rounded-xl p-4 bg-slate-50 text-xs space-y-2">
-                    <p><strong>Status:</strong> Pronto para Impressão / Exportação PDF</p>
-                    <p><strong>Configuração:</strong> Layout pronto em A4.</p>
-                </div>
-            </div>
-
-            <!-- Rodapé do Modal (Também com opção de voltar) -->
-            <div class="bg-slate-100 border-t px-6 py-4 flex justify-between items-center gap-3">
-                <button onclick="fecharModalPDF()" class="w-1/2 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-sm transition text-center flex justify-center items-center gap-2">
-                    <i class="fa-solid fa-house"></i> Voltar para Início
-                </button>
-                <button onclick="imprimirEDeixarVoltar()" class="w-1/2 py-2.5 bg-amber-700 hover:bg-amber-800 text-white font-bold rounded-xl text-sm transition text-center flex justify-center items-center gap-2 shadow">
-                    <i class="fa-solid fa-print"></i> Confirmar & Imprimir / PDF
-                </button>
-            </div>
-
+            <button type="button" onclick="fecharSplash()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg text-xs tracking-wider uppercase transition active:scale-95">
+                Entrar no Sistema
+            </button>
         </div>
     </div>
 
-    <!-- Scripts do Aplicativo -->
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between shadow-lg">
+        <div class="flex items-center gap-2">
+            <div class="bg-blue-600 p-2 rounded-lg text-white font-bold text-xs flex items-center justify-center">
+                <i class="fa-solid fa-users text-base"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-sm leading-tight text-white">Cacau pela Bahia</h1>
+                <p class="text-[11px] text-amber-400 font-semibold leading-none">Liderança: Bruno de Oliveira</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+            <!-- BACKUP EXPORTAR -->
+            <button type="button" onclick="exportarBackup()" title="Copiar Backup" class="bg-amber-600 hover:bg-amber-500 text-white font-bold p-1.5 sm:px-2 py-1.5 rounded-lg text-xs flex items-center gap-1 transition active:scale-95 shadow">
+                <i class="fa-solid fa-download"></i>
+                <span class="hidden sm:inline">Exportar</span>
+            </button>
+
+            <!-- BACKUP IMPORTAR -->
+            <button type="button" onclick="importarBackup()" title="Restaurar Backup" class="bg-purple-600 hover:bg-purple-500 text-white font-bold p-1.5 sm:px-2 py-1.5 rounded-lg text-xs flex items-center gap-1 transition active:scale-95 shadow">
+                <i class="fa-solid fa-upload"></i>
+                <span class="hidden sm:inline">Importar</span>
+            </button>
+
+            <!-- BOTÃO PORTAL TSE -->
+            <button type="button" onclick="abrirPortalTSE()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold p-1.5 sm:px-2 py-1.5 rounded-lg text-xs flex items-center gap-1 transition active:scale-95 shadow">
+                <i class="fa-solid fa-globe"></i>
+                <span class="hidden sm:inline">TSE</span>
+            </button>
+            
+            <!-- BOTÃO GERAR PDF -->
+            <button type="button" onclick="exportarRelatorioPDF()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold p-1.5 sm:px-2 py-1.5 rounded-lg text-xs flex items-center gap-1 transition active:scale-95 shadow">
+                <i class="fa-solid fa-file-pdf"></i>
+                <span class="hidden sm:inline">PDF</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content App -->
+    <main class="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
+        <div class="bg-slate-800 border border-slate-700/80 p-3.5 rounded-xl shadow space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                    <i class="fa-solid fa-filter text-amber-400"></i> Confronto de Seção & Zona
+                </h2>
+                <span id="placarVotacao" class="text-[11px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">
+                    0/0 Votaram
+                </span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1 font-semibold uppercase">Filtrar Zona</label>
+                    <select id="filtroZona" onchange="aplicarFiltros()" class="w-full bg-slate-900 border border-slate-700 text-blue-400 text-xs font-bold rounded-lg px-2.5 py-1.5 outline-none">
+                        <option value="">Todas as Zonas</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1 font-semibold uppercase">Filtrar Seção</label>
+                    <select id="filtroSecao" onchange="aplicarFiltros()" class="w-full bg-slate-900 border border-slate-700 text-emerald-400 text-xs font-bold rounded-lg px-2.5 py-1.5 outline-none">
+                        <option value="">Todas as Seções</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-slate-800/80 border border-slate-700/80 p-3.5 rounded-xl shadow">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-pie text-blue-400"></i> Distribuição por Município
+                </h2>
+                <span id="cidadesCount" class="text-[10px] bg-slate-900 text-slate-400 px-2 py-0.5 rounded-full font-semibold">0 cidades</span>
+            </div>
+            
+            <div id="graficoCidades" class="space-y-2">
+                <p class="text-xs text-slate-500 text-center py-2">Nenhum dado para exibir no gráfico.</p>
+            </div>
+        </div>
+
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Eleitores Cadastrados</h2>
+                <span id="totalCadastros" class="bg-slate-800 text-slate-300 text-xs px-2 py-0.5 rounded-full font-semibold">0 registros</span>
+            </div>
+
+            <div id="listaCadastros" class="space-y-2"></div>
+
+            <div id="emptyState" class="flex flex-col items-center justify-center py-8 text-center text-slate-500">
+                <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+                <p class="text-xs">Nenhum cadastro localizado com os filtros atuais.</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-950 to-transparent">
+        <button type="button" onclick="abrirModalFormulario()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3.5 px-4 rounded-xl shadow-2xl flex items-center justify-center gap-2 text-sm transition active:scale-95">
+            <i class="fa-solid fa-user-plus text-base"></i>
+            <span>Novo Cadastro</span>
+        </button>
+    </div>
+
+    <!-- Modal Form Cadastrar/Editar -->
+    <div id="modalForm" class="modal modal-hidden fixed inset-0 z-30 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900">
+                <h2 id="modalTitulo" class="font-bold text-base text-white flex items-center gap-2">
+                    <i class="fa-solid fa-id-card text-blue-500"></i> Cadastrar Pessoa
+                </h2>
+                <button type="button" onclick="fecharModalFormulario()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="p-4 space-y-3 text-xs overflow-y-auto">
+                <input type="hidden" id="editIndex" value="-1">
+
+                <div>
+                    <label class="block text-slate-400 font-medium mb-1">Função / Tipo de Cadastro *</label>
+                    <select id="inputFuncao" class="w-full bg-slate-800 border border-slate-700 text-amber-400 font-bold rounded-lg px-3 py-2 text-sm outline-none">
+                        <option value="Eleitor" class="text-slate-100 font-normal">Eleitor Padrão</option>
+                        <option value="Boca de Urna" class="text-amber-400 font-bold">Equipe - Boca de Urna</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-slate-400 font-medium mb-1">Nome Completo *</label>
+                    <input type="text" id="inputNome" placeholder="Digite o nome completo" class="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-3 py-2 text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="flex items-center justify-between text-slate-400 font-medium mb-1">
+                        <span>Título de Eleitor <span class="text-blue-400 text-[10px]">(Automático)</span></span>
+                        
+                        <button type="button" onclick="abrirPortalTSE()" class="text-indigo-400 hover:text-indigo-300 text-[10px] font-bold flex items-center gap-1 bg-indigo-950/50 px-2 py-0.5 rounded border border-indigo-900">
+                            <i class="fa-solid fa-magnifying-glass"></i> Consultar TSE
+                        </button>
+                    </label>
+                    <input type="number" id="inputTitulo" oninput="analisarTituloEleitor()" placeholder="Digite os 12 dígitos do Título" class="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-3 py-2 text-sm outline-none">
+                    <p id="tituloInfo" class="text-[10px] text-slate-500 mt-1"></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-400 font-medium mb-1">Zona Eleitoral *</label>
+                        <input type="number" id="inputZona" oninput="buscarCidadePorZona()" placeholder="Ex: 154" class="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-3 py-2 text-sm outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 font-medium mb-1">Seção Eleitoral *</label>
+                        <input type="number" id="inputSecao" placeholder="Ex: 101" class="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-3 py-2 text-sm outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-slate-400 font-medium mb-1">Município (BA)</label>
+                    <input type="text" id="inputCidade" placeholder="Cidade identificada ou digite..." class="w-full bg-slate-800 border border-slate-700 text-blue-400 font-semibold rounded-lg px-3 py-2 text-sm outline-none">
+                </div>
+
+                <div class="pt-3 flex items-center justify-end gap-2">
+                    <button type="button" onclick="fecharModalFormulario()" class="px-4 py-2.5 rounded-lg bg-slate-800 text-slate-300 font-medium text-xs">Cancelar</button>
+                    <button type="button" onclick="executarSalvamento()" class="px-5 py-2.5 rounded-lg bg-blue-600 text-white font-bold text-xs shadow-lg">Salvar Registro</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        function abrirModalPDF() {
-            document.getElementById('modalPDF').classList.remove('modal-hidden');
+        function fecharSplash() {
+            const splash = document.getElementById('splashScreen');
+            if (splash) splash.classList.add('splash-hidden');
         }
 
-        function fecharModalPDF() {
-            document.getElementById('modalPDF').classList.add('modal-hidden');
+        setTimeout(() => { fecharSplash(); }, 2500);
+
+        function abrirPortalTSE() {
+            window.open("https://www.tse.jus.br/servicos-eleitorais/autoatendimento-eleitoral", "_self");
         }
 
-        function imprimirEDeixarVoltar() {
-            fecharModalPDF();
-            setTimeout(() => {
-                window.print();
-            }, 300);
+        const ESTADOS_TITULO = {
+            "01": "São Paulo (SP)", "02": "Minas Gerais (MG)", "03": "Rio de Janeiro (RJ)", 
+            "04": "Rio Grande do Sul (RS)", "05": "Bahia (BA)", "06": "Paraná (PR)", 
+            "07": "Ceará (CE)", "08": "Pernambuco (PE)", "09": "Santa Catarina (SC)", 
+            "10": "Goiás (GO)", "11": "Maranhão (MA)", "12": "Paraíba (PB)", 
+            "13": "Pará (PA)", "14": "Espírito Santo (ES)", "15": "Piauí (PI)", 
+            "16": "Rio Grande do Norte (RN)", "17": "Alagoas (AL)", "18": "Sergipe (SE)", 
+            "19": "Amazonas (AM)", "20": "Rondônia (RO)", "21": "Acre (AC)", 
+            "22": "Amapá (AP)", "23": "Roraima (RR)", "24": "Tocantins (TO)", 
+            "25": "Mato Grosso do Sul (MS)", "26": "Mato Grosso (MT)", "27": "Distrito Federal (DF)"
+        };
+
+        const MAPEAMENTO_ZONAS = {
+            "1": "Salvador", "2": "Salvador", "3": "Salvador", "4": "Salvador", "5": "Salvador",
+            "21": "Esplanada", "22": "Ipiau", "23": "Jequié", "24": "Ilhéus", "27": "Itabuna",
+            "31": "Barreiras", "33": "Simões Filho", "34": "Lauro de Freitas", "35": "Alagoinhas",
+            "36": "Teixeira de Freitas", "39": "Guanambi", "40": "Jacobina", "41": "Itapetinga",
+            "154": "Feira de Santana", "155": "Feira de Santana", "170": "Camaçari", "188": "Eunápolis", "201": "Vitória da Conquista"
+        };
+
+        let cadastrosLocais = JSON.parse(localStorage.getItem('cadastros_geopolitico') || '[]');
+
+        function exportarBackup() {
+            if (cadastrosLocais.length === 0) {
+                alert("Nenhum cadastro para exportar.");
+                return;
+            }
+            const dadosCodificados = btoa(unescape(encodeURIComponent(JSON.stringify(cadastrosLocais))));
+            navigator.clipboard.writeText(dadosCodificados).then(() => {
+                alert("Código de Backup COPIADO! Cole este código no Safari usando o botão 'Importar'.");
+            }).catch(() => {
+                prompt("Copie o código de backup abaixo:", dadosCodificados);
+            });
         }
+
+        function importarBackup() {
+            const codigo = prompt("Cole aqui o Código de Backup gerado no Koder:");
+            if (!codigo) return;
+            try {
+                const dadosDecodificados = JSON.parse(decodeURIComponent(escape(atob(codigo.trim()))));
+                if (Array.isArray(dadosDecodificados)) {
+                    cadastrosLocais = dadosDecodificados;
+                    localStorage.setItem('cadastros_geopolitico', JSON.stringify(cadastrosLocais));
+                    renderizarLista();
+                    alert("Dados importados com sucesso!");
+                } else {
+                    alert("Código inválido.");
+                }
+            } catch (e) {
+                alert("Falha ao ler o código de backup. Verifique se copiou corretamente.");
+            }
+        }
+
+        function exportarRelatorioPDF() {
+            if (cadastrosLocais.length === 0) {
+                alert("Nenhum cadastro para exportar.");
+                return;
+            }
+
+            let tabelaHtml = '';
+            cadastrosLocais.forEach((item, index) => {
+                const status = item.votou ? '<b style="color: green;">VOTOU</b>' : '<span style="color: red;">PENDENTE</span>';
+                tabelaHtml += `
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${index + 1}</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;"><b>${item.nome}</b></td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">${item.funcao || 'Eleitor'}</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">${item.titulo || '-'}</td>
+                        <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${item.zona}</td>
+                        <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${item.secao}</td>
+                        <td style="padding: 8px; border: 1px solid #ccc;">${item.cidade}</td>
+                        <td style="padding: 8px; border: 1px solid #ccc; text-align: center;">${status}</td>
+                    </tr>
+                `;
+            });
+
+            const win = window.open('', '_blank');
+            if (win) {
+                win.document.write(`
+                    <html>
+                    <head><title>Relatório Eleitoral</title></head>
+                    <body style="font-family: sans-serif; padding: 20px;">
+                        <h2>Cacau pela Bahia - Relatório de Eleitores</h2>
+                        <p>Liderança: Bruno de Oliveira | Total: ${cadastrosLocais.length}</p>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr style="background: #eee;">
+                                <th>#</th><th>Nome</th><th>Função</th><th>Título</th><th>Zona</th><th>Seção</th><th>Município</th><th>Status</th>
+                            </tr>
+                            ${tabelaHtml}
+                        </table>
+                        <br><button onclick="window.print()">Imprimir</button>
+                    </body>
+                    </html>
+                `);
+                win.document.close();
+            } else {
+                alert("Pop-up bloqueado. Permita os pop-ups para gerar o PDF.");
+            }
+        }
+
+        function atualizarOpcoesFiltros() {
+            const selectZona = document.getElementById('filtroZona');
+            const selectSecao = document.getElementById('filtroSecao');
+
+            const zonaAtual = selectZona.value;
+            const secaoAtual = selectSecao.value;
+
+            const zonas = [...new Set(cadastrosLocais.map(i => i.zona))].sort((a,b) => a - b);
+            const secoes = [...new Set(cadastrosLocais.map(i => i.secao))].sort((a,b) => a - b);
+
+            selectZona.innerHTML = '<option value="">Todas as Zonas</option>';
+            zonas.forEach(z => {
+                selectZona.innerHTML += `<option value="${z}" ${z === zonaAtual ? 'selected' : ''}>Zona ${z}</option>`;
+            });
+
+            selectSecao.innerHTML = '<option value="">Todas as Seções</option>';
+            secoes.forEach(s => {
+                selectSecao.innerHTML += `<option value="${s}" ${s === secaoAtual ? 'selected' : ''}>Seção ${s}</option>`;
+            });
+        }
+
+        function aplicarFiltros() { renderizarLista(); }
+
+        function alternarStatusVoto(index) {
+            cadastrosLocais[index].votou = !cadastrosLocais[index].votou;
+            localStorage.setItem('cadastros_geopolitico', JSON.stringify(cadastrosLocais));
+            renderizarLista();
+        }
+
+        function analisarTituloEleitor() {
+            const rawVal = document.getElementById('inputTitulo').value.trim();
+            const info = document.getElementById('tituloInfo');
+            const inputCidade = document.getElementById('inputCidade');
+
+            if (rawVal.length >= 11) {
+                const tituloPadrao = rawVal.padStart(12, '0');
+                const codigoUF = tituloPadrao.substring(8, 10);
+                const ufNome = ESTADOS_TITULO[codigoUF];
+
+                if (ufNome) {
+                    info.innerText = `Título emitido em: ${ufNome}`;
+                    info.className = "text-[10px] text-emerald-400 mt-1 font-semibold";
+                    if (codigoUF === "05") {
+                        const zonaVal = document.getElementById('inputZona').value.trim();
+                        inputCidade.value = MAPEAMENTO_ZONAS[zonaVal] ? MAPEAMENTO_ZONAS[zonaVal] + " - BA" : "Bahia";
+                    } else {
+                        inputCidade.value = ufNome;
+                    }
+                } else {
+                    info.innerText = "Estado não localizado pelo Título.";
+                    info.className = "text-[10px] text-amber-400 mt-1";
+                }
+            } else {
+                info.innerText = "";
+            }
+        }
+
+        function buscarCidadePorZona() {
+            const zonaVal = document.getElementById('inputZona').value.trim();
+            const inputCidade = document.getElementById('inputCidade');
+            if (MAPEAMENTO_ZONAS[zonaVal]) {
+                inputCidade.value = MAPEAMENTO_ZONAS[zonaVal] + " - BA";
+            }
+        }
+
+        function renderizarGrafico(listaExibicao) {
+            const containerGrafico = document.getElementById('graficoCidades');
+            const cidadesCountLabel = document.getElementById('cidadesCount');
+            
+            if (listaExibicao.length === 0) {
+                containerGrafico.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">Nenhum dado para exibir no gráfico.</p>';
+                cidadesCountLabel.innerText = '0 cidades';
+                return;
+            }
+
+            const contagemCidades = {};
+            listaExibicao.forEach(item => {
+                const cidadeLimpa = item.cidade ? item.cidade.replace(' - BA', '').trim() : 'Não Informada';
+                contagemCidades[cidadeLimpa] = (contagemCidades[cidadeLimpa] || 0) + 1;
+            });
+
+            const total = listaExibicao.length;
+            const listaCidades = Object.keys(contagemCidades);
+            cidadesCountLabel.innerText = `${listaCidades.length} cidade(s)`;
+
+            let htmlGrafico = '';
+            listaCidades.sort((a, b) => contagemCidades[b] - contagemCidades[a]).forEach(cidade => {
+                const quantidade = contagemCidades[cidade];
+                const porcentagem = Math.round((quantidade / total) * 100);
+
+                htmlGrafico += `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-[11px]">
+                            <span class="font-medium text-slate-200">${cidade}</span>
+                            <span class="text-slate-400 font-semibold">${quantidade} (${porcentagem}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-700/50">
+                            <div class="bg-blue-500 h-2 rounded-full transition-all duration-500" style="width: ${porcentagem}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            containerGrafico.innerHTML = htmlGrafico;
+        }
+
+        function renderizarLista() {
+            atualizarOpcoesFiltros();
+
+            const container = document.getElementById('listaCadastros');
+            const emptyState = document.getElementById('emptyState');
+            const totalLabel = document.getElementById('totalCadastros');
+            const placarVotacao = document.getElementById('placarVotacao');
+
+            const filtroZ = document.getElementById('filtroZona').value;
+            const filtroS = document.getElementById('filtroSecao').value;
+
+            const filtrados = cadastrosLocais.filter(item => {
+                const bateZona = !filtroZ || item.zona === filtroZ;
+                const bateSecao = !filtroS || item.secao === filtroS;
+                return bateZona && bateSecao;
+            });
+
+            const totalVotaram = filtrados.filter(i => i.votou).length;
+            placarVotacao.innerText = `${totalVotaram}/${filtrados.length} Votaram`;
+
+            container.innerHTML = '';
+            totalLabel.innerText = `${filtrados.length} registro(s)`;
+
+            renderizarGrafico(filtrados);
+
+            if (filtrados.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            filtrados.slice().reverse().forEach((item) => {
+                const realIndex = cadastrosLocais.indexOf(item);
+                const card = document.createElement('div');
+                card.className = `border p-3 rounded-xl flex items-center justify-between shadow ${
+                    item.votou ? 'bg-emerald-950/30 border-emerald-600/60' : 'bg-slate-800 border-slate-700/70'
+                }`;
+                
+                const tituloBadge = item.titulo 
+                    ? `<span class="bg-slate-900 px-2 py-0.5 rounded text-blue-300 border border-slate-700"><i class="fa-solid fa-address-card text-[10px]"></i> ${item.titulo}</span>` 
+                    : '';
+
+                const funcaoBadge = item.funcao === 'Boca de Urna'
+                    ? `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded font-bold uppercase text-[10px]">Boca de Urna</span>`
+                    : `<span class="bg-slate-900 text-slate-400 border border-slate-700 px-2 py-0.5 rounded text-[10px]">Eleitor</span>`;
+
+                const btnVoto = item.votou
+                    ? `<button onclick="alternarStatusVoto(${realIndex})" class="px-2.5 py-1.5 bg-emerald-600 text-white rounded-lg font-bold text-xs">Votou</button>`
+                    : `<button onclick="alternarStatusVoto(${realIndex})" class="px-2.5 py-1.5 bg-slate-700 text-slate-300 rounded-lg font-medium text-xs">Marcar</button>`;
+
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-semibold text-slate-100 text-sm">${item.nome}</h3>
+                            ${funcaoBadge}
+                        </div>
+                        <div class="flex items-center gap-1.5 text-xs text-slate-400 flex-wrap">
+                            ${tituloBadge}
+                            <span class="bg-slate-900 px-2 py-0.5 rounded text-blue-400 border border-slate-700">Zona: <b>${item.zona}</b></span>
+                            <span class="bg-slate-900 px-2 py-0.5 rounded text-emerald-400 border border-slate-700">Seção: <b>${item.secao}</b></span>
+                            <span class="text-slate-300 text-[11px]">${item.cidade}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${btnVoto}
+                        <button onclick="editarEleitor(${realIndex})" class="p-2 bg-slate-700 rounded-lg text-blue-400"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="excluirEleitor(${realIndex})" class="p-2 bg-slate-700 rounded-lg text-red-400"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function abrirModalFormulario() {
+            document.getElementById('editIndex').value = "-1";
+            document.getElementById('modalTitulo').innerHTML = '<i class="fa-solid fa-id-card text-blue-500"></i> Cadastrar Pessoa';
+            document.getElementById('inputFuncao').value = 'Eleitor';
+            document.getElementById('inputNome').value = '';
+            document.getElementById('inputTitulo').value = '';
+            document.getElementById('tituloInfo').innerText = '';
+            document.getElementById('inputZona').value = '';
+            document.getElementById('inputSecao').value = '';
+            document.getElementById('inputCidade').value = '';
+            document.getElementById('modalForm').classList.remove('modal-hidden');
+        }
+
+        function fecharModalFormulario() {
+            document.getElementById('modalForm').classList.add('modal-hidden');
+        }
+
+        function editarEleitor(index) {
+            const eleitor = cadastrosLocais[index];
+            document.getElementById('editIndex').value = index;
+            document.getElementById('inputFuncao').value = eleitor.funcao || 'Eleitor';
+            document.getElementById('inputNome').value = eleitor.nome;
+            document.getElementById('inputTitulo').value = eleitor.titulo || '';
+            document.getElementById('inputZona').value = eleitor.zona;
+            document.getElementById('inputSecao').value = eleitor.secao;
+            document.getElementById('inputCidade').value = eleitor.cidade;
+
+            document.getElementById('modalTitulo').innerHTML = '<i class="fa-solid fa-pen-to-square text-amber-500"></i> Configurar Cadastro';
+            document.getElementById('modalForm').classList.remove('modal-hidden');
+            analisarTituloEleitor();
+        }
+
+        function excluirEleitor(index) {
+            if (!confirm("Excluir este cadastro?")) return;
+            cadastrosLocais.splice(index, 1);
+            localStorage.setItem('cadastros_geopolitico', JSON.stringify(cadastrosLocais));
+            renderizarLista();
+        }
+
+        function executarSalvamento() {
+            const funcao = document.getElementById('inputFuncao').value;
+            const nome = document.getElementById('inputNome').value.trim();
+            const titulo = document.getElementById('inputTitulo').value.trim();
+            const zona = document.getElementById('inputZona').value.trim();
+            const secao = document.getElementById('inputSecao').value.trim();
+            let cidade = document.getElementById('inputCidade').value.trim();
+
+            if (!nome || !zona || !secao) {
+                alert("Por favor, preencha Nome, Zona e Seção.");
+                return;
+            }
+
+            if (!cidade) {
+                cidade = MAPEAMENTO_ZONAS[zona] ? MAPEAMENTO_ZONAS[zona] + " - BA" : "Bahia";
+            }
+
+            const editIndex = parseInt(document.getElementById('editIndex').value, 10);
+            
+            if (editIndex >= 0) {
+                cadastrosLocais[editIndex] = { ...cadastrosLocais[editIndex], funcao, nome, titulo, zona, secao, cidade };
+            } else {
+                cadastrosLocais.push({ funcao, nome, titulo, zona, secao, cidade, votou: false, dataHora: new Date().toISOString() });
+            }
+
+            localStorage.setItem('cadastros_geopolitico', JSON.stringify(cadastrosLocais));
+            fecharModalFormulario();
+            renderizarLista();
+        }
+
+        window.addEventListener('DOMContentLoaded', renderizarLista);
     </script>
 </body>
 </html>
-
-
