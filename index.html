@@ -1,4 +1,4 @@
-          <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -12,43 +12,9 @@
     <style>
         html, body { height: 100%; margin: 0; padding: 0; }
         
-        /* Estilos da Marca d'Água na Impressão/PDF */
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; color: black !important; }
-            
-            /* Marca d'água no fundo da página impressa */
-            .watermark {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) rotate(-45deg);
-                font-size: 2.2rem;
-                font-weight: bold;
-                color: rgba(0, 0, 0, 0.08) !important;
-                white-space: nowrap;
-                pointer-events: none;
-                z-index: 9999;
-                text-align: center;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-            }
-        }
-
-        /* Marca d'água em tela caso seja pré-visualizado */
-        .watermark-preview {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 2rem;
-            font-weight: 800;
-            color: rgba(180, 83, 9, 0.06);
-            pointer-events: none;
-            user-select: none;
-            text-align: center;
-            white-space: nowrap;
-            z-index: 0;
         }
 
         .modal { transition: opacity 0.25s ease, transform 0.25s ease; }
@@ -57,13 +23,7 @@
 </head>
 <body class="bg-amber-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between relative">
 
-    <!-- Marca d'Água para Impressão e PDF -->
-    <div class="watermark hidden print:block">
-        CANDIDATO: CACAU DA MATA<br>
-        LIDERANÇA: BRUNO DE OLIVEIRA
-    </div>
-
-    <!-- Cabeçalho (Não sai no PDF/Impressão) -->
+    <!-- Cabeçalho -->
     <header class="bg-amber-900 text-amber-50 p-4 shadow-md flex justify-between items-center no-print">
         <div class="flex items-center space-x-3">
             <i class="fa-solid font-bold text-2xl text-amber-400 fa-tree"></i>
@@ -79,24 +39,11 @@
 
     <!-- Conteúdo Principal -->
     <main class="max-w-4xl w-full mx-auto p-4 flex-grow relative">
-        
-        <!-- Marca d'Água de Fundo Visual na Tela -->
-        <div class="watermark-preview">
-            CACAU DA MATA<br>
-            LIDERANÇA: BRUNO DE OLIVEIRA
-        </div>
-
-        <!-- Banner do Candidato e Liderança -->
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-amber-200/60 mb-6 relative z-10">
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-amber-200/60 mb-6">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4 mb-4">
                 <div>
                     <span class="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Projeto Regional</span>
                     <h2 class="text-2xl font-bold text-slate-900 mt-1">Relatório de Atividades & Mapeamento</h2>
-                </div>
-                <div class="text-right bg-amber-50 p-3 rounded-xl border border-amber-200/80">
-                    <p class="text-xs text-slate-500 uppercase font-bold">Candidato</p>
-                    <p class="text-lg font-extrabold text-amber-900">Cacau da Mata</p>
-                    <p class="text-xs text-slate-600 mt-1">Liderança: <span class="font-semibold text-slate-800">Bruno de Oliveira</span></p>
                 </div>
             </div>
 
@@ -106,12 +53,12 @@
 
             <!-- Cards de Ação Rápidas -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 no-print">
-                <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100 hover:border-amber-300 transition">
+                <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
                     <i class="fa-solid fa-users text-amber-700 text-xl mb-2"></i>
                     <h3 class="font-bold text-slate-800 text-base">Apoio Regional</h3>
                     <p class="text-xs text-slate-500 mt-1">Registro de contatos e lideranças locais parceiras.</p>
                 </div>
-                <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100 hover:border-amber-300 transition">
+                <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
                     <i class="fa-solid fa-map-location-dot text-amber-700 text-xl mb-2"></i>
                     <h3 class="font-bold text-slate-800 text-base">Mapeamento</h3>
                     <p class="text-xs text-slate-500 mt-1">Propostas e demandas prioritárias por município.</p>
@@ -120,15 +67,15 @@
                     <div>
                         <i class="fa-solid fa-print text-amber-300 text-xl mb-2"></i>
                         <h3 class="font-bold text-base">Gerar PDF / Imprimir</h3>
-                        <p class="text-xs text-amber-200 mt-1">Visualizar documento formatado com marca d'água.</p>
+                        <p class="text-xs text-amber-200 mt-1">Visualizar documento para impressão.</p>
                     </div>
                     <span class="text-xs font-semibold text-amber-300 mt-3 inline-block">Abrir Pré-visualização &rarr;</span>
                 </div>
             </div>
         </section>
 
-        <!-- Seção de Tabela Exemplo para Relatório -->
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-amber-200/60 relative z-10">
+        <!-- Tabela -->
+        <section class="bg-white rounded-2xl p-6 shadow-sm border border-amber-200/60">
             <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                 <i class="fa-solid fa-list-check text-amber-700"></i> Resumo de Demandas Prioritárias
             </h3>
@@ -138,7 +85,6 @@
                         <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-semibold">
                             <th class="py-3 px-4">Região / Município</th>
                             <th class="py-3 px-4">Demanda Principal</th>
-                            <th class="py-3 px-4">Responsável</th>
                             <th class="py-3 px-4">Status</th>
                         </tr>
                     </thead>
@@ -146,20 +92,12 @@
                         <tr>
                             <td class="py-3 px-4 font-medium">Sul da Bahia</td>
                             <td class="py-3 px-4">Incentivo à Cacauicultura & Agricultura Familiar</td>
-                            <td class="py-3 px-4">Bruno de Oliveira</td>
                             <td class="py-3 px-4"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold">Em Andamento</span></td>
                         </tr>
                         <tr>
                             <td class="py-3 px-4 font-medium">Litoral Sul</td>
                             <td class="py-3 px-4">Infraestrutura e Melhoria de Estradas Rurais</td>
-                            <td class="py-3 px-4">Equipe Cacau da Mata</td>
                             <td class="py-3 px-4"><span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full font-semibold">Mapeado</span></td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-4 font-medium">Baixo Sul</td>
-                            <td class="py-3 px-4">Capacitação Técnica e Apoio às Cooperativas</td>
-                            <td class="py-3 px-4">Bruno de Oliveira</td>
-                            <td class="py-3 px-4"><span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold">Em Andamento</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -169,42 +107,34 @@
 
     <!-- Rodapé -->
     <footer class="text-center p-4 text-xs text-slate-500 no-print border-t border-amber-200/40 bg-white/50 mt-6">
-        <p>© Cacau pela Bahia - Candidato Cacau da Mata | Liderança Bruno de Oliveira</p>
+        <p>© Cacau pela Bahia</p>
     </footer>
 
-    <!-- MODAL DE PDF COM BOTÃO DE VOLTAR AO MENU -->
+    <!-- MODAL DE VISUALIZAÇÃO COM BOTÃO DE VOLTAR -->
     <div id="modalPDF" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 modal modal-hidden no-print">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             
-            <!-- Barra Superior com botão Voltar -->
+            <!-- Barra Superior do Modal (Com o Botão Voltar) -->
             <div class="bg-amber-900 text-white px-6 py-4 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-file-pdf text-amber-400 text-lg"></i>
-                    <h3 class="font-bold text-base">Visualização de PDF / Impressão</h3>
+                    <h3 class="font-bold text-base">Visualização do Documento</h3>
                 </div>
-                <!-- BOTÃO VOLTAR AO MENU -->
+                <!-- BOTÃO VOLTAR PARA O MENU INICIAL -->
                 <button onclick="fecharModalPDF()" class="bg-amber-800 hover:bg-amber-700 text-amber-100 px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-arrow-left"></i> Voltar ao Menu
                 </button>
             </div>
 
-            <!-- Conteúdo do Modal -->
+            <!-- Conteúdo da Prévia -->
             <div class="p-6 overflow-y-auto space-y-4 text-slate-700 relative flex-grow">
-                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
-                    <p class="font-semibold mb-1"><i class="fa-solid fa-circle-info text-amber-700 mr-1"></i> Marca d'Água Incluída:</p>
-                    <p class="text-xs text-amber-800 mt-1">O PDF/Impressão conterá automaticamente a marca d'água no fundo:</p>
-                    <div class="bg-white/80 p-2 rounded-lg mt-2 font-bold text-center border border-amber-300 text-amber-950 text-xs uppercase tracking-wider">
-                        CACAU DA MATA — LIDERANÇA: BRUNO DE OLIVEIRA
-                    </div>
-                </div>
-
                 <div class="border rounded-xl p-4 bg-slate-50 text-xs space-y-2">
-                    <p><strong>Formato:</strong> A4 / PDF Oficial</p>
-                    <p><strong>Configuração:</strong> Layout otimizado com cabeçalho limpo e marca d'água de fundo em todas as páginas.</p>
+                    <p><strong>Status:</strong> Pronto para Impressão / Exportação PDF</p>
+                    <p><strong>Configuração:</strong> Layout pronto em A4.</p>
                 </div>
             </div>
 
-            <!-- Rodapé do Modal -->
+            <!-- Rodapé do Modal (Também com opção de voltar) -->
             <div class="bg-slate-100 border-t px-6 py-4 flex justify-between items-center gap-3">
                 <button onclick="fecharModalPDF()" class="w-1/2 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-sm transition text-center flex justify-center items-center gap-2">
                     <i class="fa-solid fa-house"></i> Voltar para Início
@@ -236,3 +166,4 @@
     </script>
 </body>
 </html>
+
