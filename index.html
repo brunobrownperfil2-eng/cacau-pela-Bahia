@@ -4,19 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cacau pela Bahia - GeoPolítico BA</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF para relatórios -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         body { background-color: #0b0f19; color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; }
         .card-dark { background-color: #111827; border: 1px solid #1f2937; }
         .btn-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: 0.2s; }
+        .btn-icon:active { transform: scale(0.95); }
     </style>
 </head>
-<body class="p-4">
+<body class="p-4 max-w-lg mx-auto">
 
-    <!-- Topo -->
+    <!-- Cabeçalho -->
     <div class="flex justify-between items-center mb-6">
         <div class="flex items-center gap-3">
             <div class="p-2.5 bg-blue-600 rounded-xl">
@@ -27,52 +32,23 @@
                 <p class="text-xs text-amber-500 font-medium">Liderança: Bruno de Oliveira</p>
             </div>
         </div>
-        // Função para Exportar/Copiar Backup (Imagem 2)
-function exportarBackup() {
-    const dados = {};
-    for (let i = 0; i < localStorage.length; i++) {
-        const chave = localStorage.key(i);
-        dados[chave] = localStorage.getItem(chave);
-    }
-    const stringDados = JSON.stringify(dados);
-    
-    // Tenta copiar direto para a área de transferência
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(stringDados).then(() => {
-            alert("Código de Backup COPIADO! Cole este código no Safari usando o botão 'Importar'.");
-        }).catch(() => {
-            prompt("Copie o Código de Backup abaixo:", stringDados);
-        });
-    } else {
-        prompt("Copie o Código de Backup abaixo:", stringDados);
-    }
-}
 
-// Função para Importar/Restaurar Backup (Imagem 1)
-function importarBackup() {
-    const codigo = prompt("Cole aqui o Código de Backup gerado no Koder:");
-    if (!codigo) return;
-    
-    try {
-        const dados = JSON.parse(codigo);
-        Object.keys(dados).forEach(chave => {
-            localStorage.setItem(chave, dados[chave]);
-        });
-        alert("Dados restaurados com sucesso!");
-        location.reload();
-    } catch (e) {
-        alert("Código de backup inválido!");
-    }
-}
-
-
+        <!-- Ícones do Topo -->
+        <div class="flex items-center gap-1.5">
+            <!-- Backup Copiar/Exportar (Laranja) -->
+            <button onclick="exportarBackup()" class="btn-icon bg-amber-600 hover:bg-amber-700 text-white" title="Exportar Backup">
+                <i class="fas fa-download text-sm"></i>
             </button>
-            <!-- WhatsApp -->
-            <button onclick="compartilharWhatsApp()" class="btn-icon bg-emerald-600/80 hover:bg-emerald-600 text-white" title="Compartilhar WhatsApp">
+            <!-- Backup Importar/Restaurar (Roxo) -->
+            <button onclick="importarBackup()" class="btn-icon bg-purple-600 hover:bg-purple-700 text-white" title="Importar Backup">
+                <i class="fas fa-upload text-sm"></i>
+            </button>
+            <!-- WhatsApp (Verde) -->
+            <button onclick="compartilharWhatsApp()" class="btn-icon bg-emerald-600 hover:bg-emerald-700 text-white" title="Compartilhar no WhatsApp">
                 <i class="fab fa-whatsapp text-sm"></i>
             </button>
-            <!-- PDF -->
-            <button onclick="gerarPDF()" class="btn-icon bg-emerald-700/80 hover:bg-emerald-700 text-white" title="Gerar PDF">
+            <!-- PDF (Verde Escuro) -->
+            <button onclick="gerarPDF()" class="btn-icon bg-emerald-800 hover:bg-emerald-900 text-white" title="Gerar PDF">
                 <i class="fas fa-file-pdf text-sm"></i>
             </button>
         </div>
@@ -82,7 +58,7 @@ function importarBackup() {
     <div class="card-dark rounded-xl p-4 mb-6">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-amber-500 font-bold text-xs tracking-wider uppercase flex items-center gap-2">
-                <i class="fas fa-filter"></i> Confronto de Seção & Zona
+                <i class="fas fa-filter"></i> CONFRONTO DE SEÇÃO & ZONA
             </h2>
             <span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs px-2.5 py-1 rounded-full font-medium" id="votosCount">0/58 Votaram</span>
         </div>
@@ -106,7 +82,7 @@ function importarBackup() {
     <div class="card-dark rounded-xl p-4 mb-6">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-gray-300 font-bold text-xs tracking-wider uppercase flex items-center gap-2">
-                <i class="fas fa-globe text-blue-500"></i> Distribuição por Município
+                <i class="fas fa-globe text-blue-500"></i> DISTRIBUIÇÃO POR MUNICÍPIO
             </h2>
             <span class="text-xs text-gray-400" id="cidadesCount">9 cidade(s)</span>
         </div>
@@ -142,7 +118,7 @@ function importarBackup() {
     <!-- Eleitores Cadastrados -->
     <div class="mb-6">
         <div class="flex justify-between items-center mb-3">
-            <h2 class="text-gray-400 font-bold text-xs tracking-wider uppercase">Eleitores Cadastrados</h2>
+            <h2 class="text-gray-400 font-bold text-xs tracking-wider uppercase">ELEITORES CADASTRADOS</h2>
             <span class="text-xs text-gray-400" id="registrosCount">58 registro(s)</span>
         </div>
 
@@ -173,9 +149,10 @@ function importarBackup() {
         </button>
     </div>
 
+    <!-- Scripts de Lógica Integrada -->
     <script>
-        // Exportar Backup via Copia/Area de Transferencia (Alert igual ao print)
-        function copiarBackup() {
+        // Função do Botão Backup Copiar (Imagem 2)
+        function exportarBackup() {
             const dados = {};
             for (let i = 0; i < localStorage.length; i++) {
                 const chave = localStorage.key(i);
@@ -183,17 +160,22 @@ function importarBackup() {
             }
             const stringDados = JSON.stringify(dados);
             
-            navigator.clipboard.writeText(stringDados).then(() => {
-                alert("Código de Backup COPIADO! Cole este código no Safari usando o botão 'Importar'.");
-            }).catch(() => {
-                prompt("Copie o código de backup abaixo:", stringDados);
-            });
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(stringDados).then(() => {
+                    alert("Código de Backup COPIADO! Cole este código no Safari usando o botão 'Importar'.");
+                }).catch(() => {
+                    prompt("Copie o Código de Backup abaixo:", stringDados);
+                });
+            } else {
+                prompt("Copie o Código de Backup abaixo:", stringDados);
+            }
         }
 
-        // Restaurar Backup via Prompt/Cole
-        function restaurarBackup() {
-            const codigo = prompt("Cole aqui o código de backup:");
+        // Função do Botão Backup Importar (Imagem 1)
+        function importarBackup() {
+            const codigo = prompt("Cole aqui o Código de Backup gerado no Koder:");
             if (!codigo) return;
+            
             try {
                 const dados = JSON.parse(codigo);
                 Object.keys(dados).forEach(chave => {
@@ -202,11 +184,11 @@ function importarBackup() {
                 alert("Dados restaurados com sucesso!");
                 location.reload();
             } catch (e) {
-                alert("Código de backup inválido.");
+                alert("Código de backup inválido!");
             }
         }
 
-        // Compartilhar WhatsApp
+        // Função do Botão WhatsApp
         function compartilharWhatsApp() {
             const msg = encodeURIComponent("Acesse o sistema Cacau pela Bahia - GeoPolítico BA: https://brunobrownperfil2-eng.github.io/cacau-pela-Bahia/");
             window.open(`https://api.whatsapp.com/send?text=${msg}`, "_blank");
@@ -217,7 +199,7 @@ function importarBackup() {
         }
 
         function atualizarFiltros() {
-            // Lógica de filtragem das listas
+            // Lógica interna de atualização
         }
     </script>
 </body>
