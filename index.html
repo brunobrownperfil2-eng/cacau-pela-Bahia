@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cacau pela Bahia - GeoPolítico BA</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- jsPDF para relatórios -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
@@ -35,20 +32,16 @@
 
         <!-- Ícones do Topo -->
         <div class="flex items-center gap-1.5">
-            <!-- Backup Copiar/Exportar (Laranja) -->
             <button onclick="exportarBackup()" class="btn-icon bg-amber-600 hover:bg-amber-700 text-white" title="Exportar Backup">
                 <i class="fas fa-download text-sm"></i>
             </button>
-            <!-- Backup Importar/Restaurar (Roxo) -->
             <button onclick="importarBackup()" class="btn-icon bg-purple-600 hover:bg-purple-700 text-white" title="Importar Backup">
                 <i class="fas fa-upload text-sm"></i>
             </button>
-            <!-- WhatsApp (Verde) -->
-            <button onclick="compartilharWhatsApp()" class="btn-icon bg-emerald-600 hover:bg-emerald-700 text-white" title="Compartilhar no WhatsApp">
+            <button onclick="compartilharWhatsApp()" class="btn-icon bg-emerald-600 hover:bg-emerald-700 text-white" title="WhatsApp">
                 <i class="fab fa-whatsapp text-sm"></i>
             </button>
-            <!-- PDF (Verde Escuro) -->
-            <button onclick="gerarPDF()" class="btn-icon bg-emerald-800 hover:bg-emerald-900 text-white" title="Gerar PDF">
+            <button onclick="gerarPDF()" class="btn-icon bg-emerald-800 hover:bg-emerald-900 text-white" title="PDF">
                 <i class="fas fa-file-pdf text-sm"></i>
             </button>
         </div>
@@ -151,7 +144,6 @@
 
     <!-- Scripts de Lógica Integrada -->
     <script>
-        // Função do Botão Backup Copiar (Imagem 2)
         function exportarBackup() {
             const dados = {};
             for (let i = 0; i < localStorage.length; i++) {
@@ -171,7 +163,6 @@
             }
         }
 
-        // Função do Botão Backup Importar (Imagem 1)
         function importarBackup() {
             const codigo = prompt("Cole aqui o Código de Backup gerado no Koder:");
             if (!codigo) return;
@@ -188,7 +179,6 @@
             }
         }
 
-        // Função do Botão WhatsApp
         function compartilharWhatsApp() {
             const msg = encodeURIComponent("Acesse o sistema Cacau pela Bahia - GeoPolítico BA: https://brunobrownperfil2-eng.github.io/cacau-pela-Bahia/");
             window.open(`https://api.whatsapp.com/send?text=${msg}`, "_blank");
@@ -199,7 +189,7 @@
         }
 
         function atualizarFiltros() {
-            // Lógica interna de atualização
+            // Lógica interna
         }
     </script>
 </body>
