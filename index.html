@@ -4,702 +4,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cacau pela Bahia - Liderança: Bruno de Oliveira</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Bibliotecas para geração de PDF e AutoTable -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- JSZip para Backup .ZIP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
-        body { background-color: #0b0f19; color: #f1f5f9; font-family: ui-sans-serif, system-ui, sans-serif; }
+        body { background-color: #0b0f19; color: #f3f4f6; }
         .card-dark { background-color: #111827; border: 1px solid #1f2937; }
-        .progress-bar { background-color: #1e293b; height: 6px; border-radius: 9999px; overflow: hidden; }
-        .progress-fill { background-color: #3b82f6; height: 100%; border-radius: 9999px; }
-        .city-row { transition: all 0.2s ease; cursor: pointer; }
-        .city-row:hover { background-color: #1f2937; transform: translateX(2px); }
-
-        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .pdf-table th { background-color: #0f172a; color: #ffffff; font-size: 8pt; font-weight: bold; text-transform: uppercase; padding: 7px 8px; text-align: left; border: 1px solid #0f172a; }
-        .pdf-table td { padding: 6px 8px; border-bottom: 1px solid #cbd5e1; font-size: 8.5pt; vertical-align: middle; color: #0f172a; }
-        .pdf-table tr:nth-child(even) { background-color: #f8fafc; }
-        .badge-pdf-code { font-family: monospace; font-weight: bold; color: #0369a1; }
+        .progress-bar { background-color: #374151; }
+        .progress-fill { background-color: #10b981; }
+        .modal { transition: opacity 0.2s ease-in-out; }
+        .modal-hidden { opacity: 0; pointer-events: none; }
     </style>
 </head>
-<body class="p-4 max-w-lg mx-auto space-y-5 pb-24">
+<body class="p-4 md:p-8">
 
-    <div id="conteudoPrincipal" class="space-y-5">
-        <header class="flex justify-between items-center py-2">
-            <div class="flex items-center gap-3">
-                <div class="bg-blue-600 p-2.5 rounded-xl text-white">
-                    <i class="fa-solid fa-users text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="text-base font-bold leading-tight">Cacau pela Bahia</h1>
-                    <p class="text-xs text-amber-500 font-medium">Liderança: Bruno de Oliveira</p>
-                </div>
+    <!-- Cabeçalho com Título e Botões Principais -->
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+        <div class="flex items-center gap-3">
+            <div class="p-3 bg-blue-600 rounded-xl">
+                <i class="fas fa-users text-2xl text-white"></i>
             </div>
-            
-            <div class="flex gap-1.5">
-                <button type="button" onclick="abrirConsultaTSE()" title="Consulta TSE" class="bg-sky-600 hover:bg-sky-500 p-2 rounded-lg text-white text-xs transition flex items-center gap-1 font-bold">
-                    <i class="fa-solid fa-scale-balanced"></i>
-                </button>
-                <button type="button" onclick="exportarDados()" title="Gerar Código Backup" class="bg-amber-600 hover:bg-amber-500 p-2 rounded-lg text-white text-xs transition">
-                    <i class="fa-solid fa-download"></i>
-                </button>
-                <button type="button" onclick="importarCodigoBackup()" title="Colar Código Backup" class="bg-purple-600 hover:bg-purple-500 p-2 rounded-lg text-white text-xs transition">
-                    <i class="fa-solid fa-upload"></i>
-                </button>
-                <button type="button" onclick="abrirTelaRelatorio(false)" title="Relatório Geral" class="bg-emerald-600 hover:bg-emerald-500 p-2 rounded-lg text-white text-xs transition flex items-center gap-1 font-bold">
-                    <i class="fa-solid fa-file-lines"></i>
-                </button>
+            <div>
+                <h1 class="text-xl font-bold text-white">Cacau pela Bahia</h1>
+                <p class="text-xs text-amber-500 font-medium">Liderança: Bruno de Oliveira</p>
             </div>
-        </header>
+        </div>
 
-        <section class="card-dark p-4 rounded-2xl">
-            <div class="flex justify-between items-center mb-3">
-                <h2 class="text-xs font-bold text-amber-500 tracking-wider flex items-center gap-1.5 uppercase">
-                    <i class="fa-solid fa-filter"></i> CONFRONTO DE SEÇÃO & ZONA
-                </h2>
-            </div>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="text-[10px] text-slate-400 font-bold uppercase">FILTRAR ZONA</label>
-                    <select id="filtroZonaSelect" onchange="filtrarEleitores()" class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-slate-300 font-medium focus:outline-none">
-                        <option value="">Todas as Zonas</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] text-slate-400 font-bold uppercase">FILTRAR SEÇÃO</label>
-                    <select id="filtroSecaoSelect" onchange="filtrarEleitores()" class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-emerald-400 font-medium focus:outline-none">
-                        <option value="">Todas as Seções</option>
-                    </select>
-                </div>
-            </div>
-        </section>
+        <div class="flex items-center gap-2">
+            <!-- Botão TSE (Redirecionamento Direto) -->
+            <button onclick="abrirTSE()" class="p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition" title="Consultar TSE">
+                <i class="fas fa-scale-balanced text-lg"></i>
+            </button>
 
-        <section class="card-dark p-4 rounded-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xs font-bold text-slate-200 tracking-wider flex items-center gap-2 uppercase">
-                    <i class="fa-solid fa-chart-pie text-blue-500"></i> DISTRIBUIÇÃO POR MUNICÍPIO
-                </h2>
-                <span id="totalCidadesBadge" class="bg-slate-800 text-slate-400 text-xs px-2.5 py-0.5 rounded-full">0 cidade(s)</span>
-            </div>
-            <div id="listaMunicipios" class="space-y-3"></div>
-        </section>
+            <!-- Botão Backup (Download .zip) -->
+            <button onclick="exportarBackup()" class="p-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg transition" title="Exportar Backup">
+                <i class="fas fa-download text-lg"></i>
+            </button>
 
-        <section class="space-y-3">
-            <div class="flex items-center justify-between gap-2">
-                <h2 class="text-xs font-bold text-slate-400 tracking-wider uppercase whitespace-nowrap">ELEITORES CADASTRADOS</h2>
-                <div class="flex items-center gap-2">
-                    <button onclick="abrirTelaRelatorio(true)" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg transition flex items-center gap-1.5" title="Boca de Urna">
-                        <i class="fa-solid fa-bullhorn"></i> Relatório Boca de Urna (<span id="bocaUrnaCount">0</span>)
-                    </button>
-                    <span id="totalEleitoresBadge" class="bg-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-full whitespace-nowrap">0</span>
-                </div>
-            </div>
+            <!-- Botão Restaurar Backup -->
+            <label class="p-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg cursor-pointer transition" title="Restaurar Backup">
+                <i class="fas fa-upload text-lg"></i>
+                <input type="file" id="importInput" onchange="importarBackup(event)" class="hidden" accept=".zip">
+            </label>
 
-            <div class="relative w-full">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
-                <input 
-                    type="text" 
-                    id="inputBuscaEleitor" 
-                    oninput="filtrarEleitores()" 
-                    placeholder="Pesquisar eleitor por nome, CPF, cidade..." 
-                    class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500"
-                >
-            </div>
-
-            <div id="listaEleitoresGeral" class="space-y-3"></div>
-        </section>
-
-        <div class="fixed bottom-4 left-0 right-0 max-w-lg mx-auto px-4">
-            <button onclick="abrirModalNovoCadastro()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3.5 rounded-2xl shadow-xl flex items-center justify-center gap-2 text-sm transition">
-                <i class="fa-solid fa-user-plus"></i> Novo Cadastro
+            <!-- Botão Compartilhar WhatsApp -->
+            <button onclick="compartilharWhatsApp()" class="p-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition" title="Compartilhar WhatsApp">
+                <i class="fab fa-whatsapp text-lg"></i>
             </button>
         </div>
     </div>
 
-    <!-- TELA DE RELATÓRIO / VISUALIZAÇÃO -->
-    <div id="secaoImpressaoPDF" class="hidden space-y-4">
-        <div class="flex flex-col gap-2 bg-slate-900 p-3 rounded-xl border border-slate-800">
-            <div class="flex justify-between items-center">
-                <button onclick="voltarAoMenu()" class="bg-slate-700 hover:bg-slate-800 text-white font-bold px-3 py-2 rounded-lg text-xs transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-arrow-left"></i> Voltar
-                </button>
+    <!-- Conteúdo Principal -->
+    <div class="max-w-4xl mx-auto card-dark rounded-xl p-4">
+        <h2 class="text-amber-500 font-bold text-sm tracking-wider uppercase mb-4">
+            <i class="fas fa-filter mr-2"></i>Confronto de Seção & Zona
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">FILTRAR ZONA</label>
+                <select class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500">
+                    <option value="">Todas as Zonas</option>
+                </select>
             </div>
-            <button onclick="gerarECompartilharPDF()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-3 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-lg">
-                <i class="fa-solid fa-file-pdf text-base"></i> Gerar / Compartilhar PDF no WhatsApp
-            </button>
-        </div>
-
-        <div id="conteudoParaPDF" class="p-3 bg-white text-slate-900 rounded-2xl overflow-x-auto">
-            <div class="pdf-header border-b-2 border-blue-600 pb-2">
-                <h1 id="pdfTituloPrincipal" style="font-size: 13pt; font-weight: bold; color: #1e3a8a; margin: 0;">Cacau pela Bahia - Relatório de Eleitores</h1>
-                <p style="font-size: 9pt; color: #d97706; font-weight: bold; margin: 4px 0 0 0;">Liderança: Bruno de Oliveira | Total: <span id="pdfTotalEleitores">0</span></p>
-            </div>
-
-            <table class="pdf-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%; text-align: center;">#</th>
-                        <th style="width: 35%;">Nome</th>
-                        <th style="width: 20%;">CPF / Título</th>
-                        <th style="width: 10%; text-align: center;">Zona</th>
-                        <th style="width: 10%; text-align: center;">Seção</th>
-                        <th style="width: 20%;">Município</th>
-                    </tr>
-                </thead>
-                <tbody id="pdfTabelaCorpo"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- MODAL ELEITORES DA CIDADE -->
-    <div id="modalMunicipio" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="card-dark w-full max-w-md rounded-2xl overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
-                <h3 id="modalTituloCidade" class="font-bold text-slate-200 text-sm flex items-center gap-2"></h3>
-                <button onclick="fecharModalMunicipio()" class="text-slate-400 hover:text-white text-lg">&times;</button>
-            </div>
-            <div id="modalListaCidade" class="p-4 overflow-y-auto space-y-3 divide-y divide-slate-800/60"></div>
-            <div class="p-3 border-t border-slate-800 text-right bg-slate-900/30">
-                <button onclick="fecharModalMunicipio()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-lg font-medium">Fechar</button>
+            <div>
+                <label class="block text-xs text-gray-400 mb-1">FILTRAR SEÇÃO</label>
+                <select class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:outline-none focus:border-blue-500">
+                    <option value="">Todas as Seções</option>
+                </select>
             </div>
         </div>
     </div>
 
-    <!-- MODAL NOVO CADASTRO -->
-    <div id="modalNovoCadastro" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="card-dark w-full max-w-sm rounded-2xl p-5 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold text-slate-200 text-sm">Novo Cadastro de Eleitor</h3>
-                <button onclick="fecharModalNovoCadastro()" class="text-slate-400 text-lg">&times;</button>
-            </div>
-            <form onsubmit="cadastrarEleitor(event)" class="space-y-3">
-                <div>
-                    <label class="text-[11px] text-slate-400 font-semibold">Nome Completo</label>
-                    <input type="text" id="cadNome" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                </div>
-                <div>
-                    <label class="text-[11px] text-slate-400 font-semibold">CPF / Título</label>
-                    <input type="text" id="cadCPF" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-[11px] text-slate-400 font-semibold">Zona</label>
-                        <input type="text" id="cadZona" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 font-semibold">Seção</label>
-                        <input type="text" id="cadSecao" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                    </div>
-                </div>
-                <div>
-                    <label class="text-[11px] text-slate-400 font-semibold">Município</label>
-                    <select id="cadMunicipio" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                        <option value="Madre de Deus">Madre de Deus</option>
-                        <option value="Feira de Santana">Feira de Santana</option>
-                        <option value="Candeias">Candeias</option>
-                        <option value="Mata de São João">Mata de São João</option>
-                        <option value="São Francisco do Conde">São Francisco do Conde</option>
-                        <option value="Santa Terezinha">Santa Terezinha</option>
-                        <option value="Euclides da Cunha">Euclides da Cunha</option>
-                        <option value="Salvador">Salvador</option>
-                        <option value="Camaçari">Camaçari</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg text-xs mt-2">
-                    Salvar Eleitor
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL EDITAR ELEITOR -->
-    <div id="modalEditarEleitor" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="card-dark w-full max-w-sm rounded-2xl p-5 space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold text-slate-200 text-sm">Editar Eleitor</h3>
-                <button onclick="fecharModalEditarEleitor()" class="text-slate-400 text-lg">&times;</button>
-            </div>
-            <form onsubmit="salvarEdicaoEleitor(event)" class="space-y-3">
-                <input type="hidden" id="editIndex">
-                <div>
-                    <label class="text-[11px] text-slate-400 font-semibold">Nome Completo</label>
-                    <input type="text" id="editNome" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                </div>
-                <div>
-                    <label class="text-[11px] text-slate-400 font-semibold">CPF / Título</label>
-                    <input type="text" id="editCPF" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="text-[11px] text-slate-400 font-semibold">Zona</label>
-                        <input type="text" id="editZona" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-400 font-semibold">Seção</label>
-                        <input type="text" id="editSecao" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                    </div>
-                </div>
-                <div>
-                    <label class="text-[11px] text-slate-400 font-semibold">Município</label>
-                    <select id="editMunicipio" required class="w-full mt-1 bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200">
-                        <option value="Madre de Deus">Madre de Deus</option>
-                        <option value="Feira de Santana">Feira de Santana</option>
-                        <option value="Candeias">Candeias</option>
-                        <option value="Mata de São João">Mata de São João</option>
-                        <option value="São Francisco do Conde">São Francisco do Conde</option>
-                        <option value="Santa Terezinha">Santa Terezinha</option>
-                        <option value="Euclides da Cunha">Euclides da Cunha</option>
-                        <option value="Salvador">Salvador</option>
-                        <option value="Camaçari">Camaçari</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg text-xs mt-2">
-                    Atualizar Dados
-                </button>
-            </form>
-        </div>
-    </div>
-
+    <!-- Script de Funcionamento dos Botões -->
     <script>
-        let eleitores = JSON.parse(localStorage.getItem('cacau_eleitores_db')) || [];
-        let municipioAtualModal = null;
-        let listaAtualRelatorio = [];
-        let tituloAtualRelatorio = "Relatório de Eleitores";
-
-        function salvarLocalStorage() {
-            localStorage.setItem('cacau_eleitores_db', JSON.stringify(eleitores));
+        // Função do Botão TSE
+        function abrirTSE() {
+            window.open("https://www.tse.jus.br/servicos-eleitorais/titulo-e-local-de-votacao/consulta-por-nome", "_blank");
         }
 
-        function abrirConsultaTSE() {
-            window.open("https://www.tse.jus.br/servicos-eleitorais/titulo-e-local-de-votacao/titulo-e-local-de-votacao", "_blank");
+        // Função do Botão WhatsApp
+        function compartilharWhatsApp() {
+            const mensagem = encodeURIComponent("Acesse o sistema Cacau pela Bahia - GeoPolítico BA: https://brunobrownperfil2-eng.github.io/cacau-pela-Bahia/");
+            window.open(`https://api.whatsapp.com/send?text=${mensagem}`, "_blank");
         }
 
-        function importarCodigoBackup() {
-            const rawInput = prompt("Cole aqui o Código de Backup:");
-            if (!rawInput) return;
-
-            let textoLimpo = rawInput.trim();
-
-            if ((textoLimpo.startsWith('"') && textoLimpo.endsWith('"')) || (textoLimpo.startsWith("'") && textoLimpo.endsWith("'"))) {
-                textoLimpo = textoLimpo.slice(1, -1);
+        // Função de Exportar Backup em .ZIP
+        async function exportarBackup() {
+            if (typeof JSZip === "undefined") {
+                alert("Aguarde a biblioteca carregar totalmente.");
+                return;
             }
+            const zip = new JSZip();
+            const dados = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const chave = localStorage.key(i);
+                dados[chave] = localStorage.getItem(chave);
+            }
+            zip.file("backup_cacau_bahia.json", JSON.stringify(dados, null, 2));
+            const conteudo = await zip.generateAsync({ type: "blob" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(conteudo);
+            a.download = `backup_cacau_bahia_${new Date().toISOString().slice(0,10)}.zip`;
+            a.click();
+        }
 
-            if (!textoLimpo.startsWith("[")) textoLimpo = "[" + textoLimpo;
-            if (!textoLimpo.endsWith("]")) textoLimpo = textoLimpo + "]";
-
+        // Função de Importar Backup em .ZIP
+        async function importarBackup(event) {
+            const arquivo = event.target.files[0];
+            if (!arquivo) return;
             try {
-                let parsed = JSON.parse(textoLimpo);
-
-                if (typeof parsed === 'string') parsed = JSON.parse(parsed);
-
-                if (!Array.isArray(parsed) && typeof parsed === 'object' && parsed !== null) {
-                    const chaveArray = Object.keys(parsed).find(k => Array.isArray(parsed[k]));
-                    if (chaveArray) parsed = parsed[chaveArray];
-                    else parsed = [parsed];
-                }
-
-                if (!Array.isArray(parsed) || parsed.length === 0) {
-                    alert("O texto colado não contém registros válidos.");
+                const zip = await JSZip.loadAsync(arquivo);
+                const jsonFile = zip.file("backup_cacau_bahia.json");
+                if (!jsonFile) {
+                    alert("Arquivo de backup inválido!");
                     return;
                 }
-
-                eleitores = parsed.map(item => ({
-                    nome: item.nome || item.Nome || item.NOME || "Sem Nome",
-                    cpf: String(item.cpf || item.CPF || item.titulo || item.CPF_Titulo || "-"),
-                    zona: String(item.zona || item.Zona || "000"),
-                    secao: String(item.secao || item.Secao || item.seção || "0000"),
-                    municipio: item.municipio || item.cidade || item.Cidade || "Madre de Deus",
-                    bocaUrna: item.bocaUrna || false
-                }));
-
-                salvarLocalStorage();
-                atualizarTela();
-                alert(`Backup importado com sucesso! ${eleitores.length} eleitores carregados.`);
-
-            } catch (err) {
-                alert("Erro ao ler o código de backup.");
+                const texto = await jsonFile.async("string");
+                const dados = JSON.parse(texto);
+                Object.keys(dados).forEach(chave => localStorage.setItem(chave, dados[chave]));
+                alert("Backup restaurado com sucesso!");
+                location.reload();
+            } catch (e) {
+                alert("Erro ao ler o arquivo de backup.");
             }
         }
-
-        function exportarDados() {
-            const codigoTexto = JSON.stringify(eleitores);
-            navigator.clipboard.writeText(codigoTexto).then(() => {
-                alert("Código de backup copiado!");
-            }).catch(() => {
-                prompt("Copie o código abaixo:", codigoTexto);
-            });
-        }
-
-        function alternarBocaUrna(index) {
-            eleitores[index].bocaUrna = !eleitores[index].bocaUrna;
-            salvarLocalStorage();
-            atualizarTela();
-            if (municipioAtualModal) abrirModalMunicipio(municipioAtualModal);
-        }
-
-        function deletarEleitor(index) {
-            if (confirm(`Deseja remover ${eleitores[index].nome}?`)) {
-                eleitores.splice(index, 1);
-                salvarLocalStorage();
-                atualizarTela();
-                if (municipioAtualModal) abrirModalMunicipio(municipioAtualModal);
-            }
-        }
-
-        function abrirModalEditarEleitor(index) {
-            const el = eleitores[index];
-            if (!el) return;
-
-            document.getElementById('editIndex').value = index;
-            document.getElementById('editNome').value = el.nome;
-            document.getElementById('editCPF').value = el.cpf;
-            document.getElementById('editZona').value = el.zona;
-            document.getElementById('editSecao').value = el.secao;
-            
-            const selectMuni = document.getElementById('editMunicipio');
-            selectMuni.value = el.municipio;
-            
-            if (!selectMuni.value) {
-                const opt = document.createElement('option');
-                opt.value = el.municipio;
-                opt.innerText = el.municipio;
-                selectMuni.appendChild(opt);
-                selectMuni.value = el.municipio;
-            }
-
-            document.getElementById('modalEditarEleitor').classList.remove('hidden');
-            document.getElementById('modalEditarEleitor').classList.add('flex');
-        }
-
-        function fecharModalEditarEleitor() {
-            document.getElementById('modalEditarEleitor').classList.add('hidden');
-        }
-
-        function salvarEdicaoEleitor(e) {
-            e.preventDefault();
-            const index = parseInt(document.getElementById('editIndex').value);
-            if (isNaN(index) || !eleitores[index]) return;
-
-            eleitores[index].nome = document.getElementById('editNome').value.trim();
-            eleitores[index].cpf = document.getElementById('editCPF').value.trim();
-            eleitores[index].zona = document.getElementById('editZona').value.trim();
-            eleitores[index].secao = document.getElementById('editSecao').value.trim();
-            eleitores[index].municipio = document.getElementById('editMunicipio').value;
-
-            salvarLocalStorage();
-            fecharModalEditarEleitor();
-            atualizarTela();
-
-            if (municipioAtualModal) {
-                abrirModalMunicipio(municipioAtualModal);
-            }
-        }
-
-        function abrirTelaRelatorio(apenasBocaUrna = false) {
-            const corpoTabela = document.getElementById('pdfTabelaCorpo');
-            corpoTabela.innerHTML = '';
-
-            const titulo = document.getElementById('pdfTituloPrincipal');
-            tituloAtualRelatorio = apenasBocaUrna ? "Relatório de Boca de Urna" : "Relatório Geral de Eleitores";
-            titulo.innerText = `Cacau pela Bahia - ${tituloAtualRelatorio}`;
-
-            if (apenasBocaUrna) {
-                listaAtualRelatorio = eleitores.filter(e => e.bocaUrna);
-                if (listaAtualRelatorio.length === 0) {
-                    alert("Nenhum eleitor foi selecionado para a Boca de Urna.");
-                    return;
-                }
-            } else {
-                const termo = document.getElementById('inputBuscaEleitor').value.toLowerCase().trim();
-                const zonaFiltro = document.getElementById('filtroZonaSelect').value;
-                const secaoFiltro = document.getElementById('filtroSecaoSelect').value;
-
-                listaAtualRelatorio = eleitores.filter(e => {
-                    const bateTexto = e.nome.toLowerCase().includes(termo) ||
-                                     String(e.cpf).includes(termo) ||
-                                     String(e.zona).includes(termo) ||
-                                     String(e.secao).includes(termo) ||
-                                     e.municipio.toLowerCase().includes(termo);
-                    const bateZona = zonaFiltro === "" || String(e.zona) === zonaFiltro;
-                    const bateSecao = secaoFiltro === "" || String(e.secao) === secaoFiltro;
-                    return bateTexto && bateZona && bateSecao;
-                });
-            }
-
-            document.getElementById('pdfTotalEleitores').innerText = listaAtualRelatorio.length;
-
-            listaAtualRelatorio.forEach((el, index) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="text-align: center; color: #64748b;">${index + 1}</td>
-                    <td><strong>${el.nome}</strong></td>
-                    <td><span class="badge-pdf-code">${el.cpf}</span></td>
-                    <td style="text-align: center;"><span class="badge-pdf-code">${el.zona}</span></td>
-                    <td style="text-align: center;"><span class="badge-pdf-code">${el.secao}</span></td>
-                    <td>${el.municipio}</td>
-                `;
-                corpoTabela.appendChild(tr);
-            });
-
-            document.getElementById('conteudoPrincipal').classList.add('hidden');
-            document.getElementById('secaoImpressaoPDF').classList.remove('hidden');
-            window.scrollTo(0, 0);
-        }
-
-        async function gerarECompartilharPDF() {
-            if (!window.jspdf) {
-                alert("Aguarde a biblioteca de PDF carregar e tente novamente.");
-                return;
-            }
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            // Cabeçalho do PDF
-            doc.setFontSize(16);
-            doc.setTextColor(30, 58, 138); // Azul
-            doc.text(`Cacau pela Bahia - ${tituloAtualRelatorio}`, 14, 15);
-
-            doc.setFontSize(10);
-            doc.setTextColor(217, 119, 6); // Amarelo/Laranja
-            doc.text(`Liderança: Bruno de Oliveira | Total: ${listaAtualRelatorio.length} registro(s)`, 14, 22);
-
-            // Mapeia os dados da tabela
-            const dadosTabela = listaAtualRelatorio.map((el, i) => [
-                i + 1,
-                el.nome,
-                el.cpf,
-                el.zona,
-                el.secao,
-                el.municipio
-            ]);
-
-            // Gera a tabela formatada
-            doc.autoTable({
-                startY: 27,
-                head: [['#', 'Nome Completo', 'CPF / Título', 'Zona', 'Seção', 'Município']],
-                body: dadosTabela,
-                headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255], fontStyle: 'bold' },
-                alternateRowStyles: { fillColor: [248, 250, 252] },
-                styles: { fontSize: 8, cellPadding: 3 }
-            });
-
-            // Converte o PDF para Arquivo e tenta abrir no Compartilhamento / WhatsApp do iOS
-            const blobPDF = doc.output('blob');
-            const filePDF = new File([blobPDF], `Relatorio_Cacau.pdf`, { type: 'application/pdf' });
-
-            if (navigator.canShare && navigator.canShare({ files: [filePDF] })) {
-                try {
-                    await navigator.share({
-                        files: [filePDF],
-                        title: `Cacau pela Bahia - ${tituloAtualRelatorio}`,
-                        text: 'Segue em anexo o relatório em PDF.'
-                    });
-                    return;
-                } catch (e) {
-                    if (e.name === 'AbortError') return;
-                }
-            }
-
-            // Caso o iOS bloqueie o compartilhamento direto, força o download do PDF
-            doc.save(`Relatorio_Cacau.pdf`);
-        }
-
-        function voltarAoMenu() {
-            document.getElementById('secaoImpressaoPDF').classList.add('hidden');
-            document.getElementById('conteudoPrincipal').classList.remove('hidden');
-        }
-
-        function ordenarEleitores() {
-            eleitores.sort((a, b) => a.nome.localeCompare(b.nome));
-        }
-
-        function cadastrarEleitor(e) {
-            e.preventDefault();
-            const nome = document.getElementById('cadNome').value.trim();
-            const cpf = document.getElementById('cadCPF').value.trim();
-            const zona = document.getElementById('cadZona').value.trim();
-            const secao = document.getElementById('cadSecao').value.trim();
-            const municipio = document.getElementById('cadMunicipio').value;
-
-            eleitores.push({ nome, cpf, zona, secao, municipio, bocaUrna: false });
-            salvarLocalStorage();
-            fecharModalNovoCadastro();
-
-            document.getElementById('cadNome').value = '';
-            document.getElementById('cadCPF').value = '';
-            document.getElementById('cadZona').value = '';
-            document.getElementById('cadSecao').value = '';
-            
-            atualizarTela();
-            alert("Eleitor cadastrado com sucesso!");
-        }
-
-        function renderizarMunicipios() {
-            const container = document.getElementById('listaMunicipios');
-            container.innerHTML = '';
-
-            const contagem = {};
-            eleitores.forEach(e => {
-                contagem[e.municipio] = (contagem[e.municipio] || 0) + 1;
-            });
-
-            const total = eleitores.length;
-            const municipiosOrdenados = Object.keys(contagem).sort((a, b) => contagem[b] - contagem[a]);
-
-            document.getElementById('totalCidadesBadge').innerText = `${municipiosOrdenados.length} cidade(s)`;
-
-            municipiosOrdenados.forEach(muni => {
-                const qtd = contagem[muni];
-                const pct = total > 0 ? Math.round((qtd / total) * 100) : 0;
-                
-                const div = document.createElement('div');
-                div.className = 'city-row p-2 rounded-xl bg-slate-900/40 border border-slate-800/80';
-                div.onclick = () => abrirModalMunicipio(muni);
-                div.innerHTML = `
-                    <div class="flex justify-between items-center text-xs mb-1.5">
-                        <span class="text-slate-200 font-semibold hover:text-blue-400 transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-location-dot text-blue-500 text-[10px]"></i> ${muni}
-                        </span>
-                        <span class="text-xs font-bold text-blue-400">${qtd} (${pct}%)</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${pct}%"></div>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function preencherFiltrosSelects() {
-            const zSelect = document.getElementById('filtroZonaSelect');
-            const sSelect = document.getElementById('filtroSecaoSelect');
-
-            const valorZ = zSelect.value;
-            const valorS = sSelect.value;
-
-            const zonas = [...new Set(eleitores.map(e => String(e.zona)))].sort();
-            const secoes = [...new Set(eleitores.map(e => String(e.secao)))].sort();
-
-            zSelect.innerHTML = '<option value="">Todas as Zonas</option>';
-            zonas.forEach(z => {
-                zSelect.innerHTML += `<option value="${z}" ${z === valorZ ? 'selected' : ''}>Zona ${z}</option>`;
-            });
-
-            sSelect.innerHTML = '<option value="">Todas as Seções</option>';
-            secoes.forEach(s => {
-                sSelect.innerHTML += `<option value="${s}" ${s === valorS ? 'selected' : ''}>Seção ${s}</option>`;
-            });
-        }
-
-        function filtrarEleitores() {
-            const termo = document.getElementById('inputBuscaEleitor').value.toLowerCase().trim();
-            const zonaFiltro = document.getElementById('filtroZonaSelect').value;
-            const secaoFiltro = document.getElementById('filtroSecaoSelect').value;
-
-            const filtrados = eleitores.filter(e => {
-                const bateTexto = e.nome.toLowerCase().includes(termo) ||
-                                 String(e.cpf).includes(termo) ||
-                                 String(e.zona).includes(termo) ||
-                                 String(e.secao).includes(termo) ||
-                                 e.municipio.toLowerCase().includes(termo);
-                const bateZona = zonaFiltro === "" || String(e.zona) === zonaFiltro;
-                const bateSecao = secaoFiltro === "" || String(e.secao) === secaoFiltro;
-                return bateTexto && bateZona && bateSecao;
-            });
-
-            renderizarEleitoresGeral(filtrados);
-        }
-
-        function renderizarEleitoresGeral(listaParaExibir = eleitores) {
-            const container = document.getElementById('listaEleitoresGeral');
-            container.innerHTML = '';
-
-            document.getElementById('totalEleitoresBadge').innerText = `${listaParaExibir.length} registro(s)`;
-
-            const bocaUrnaTotal = eleitores.filter(e => e.bocaUrna).length;
-            document.getElementById('bocaUrnaCount').innerText = bocaUrnaTotal;
-
-            if (listaParaExibir.length === 0) {
-                container.innerHTML = `<div class="card-dark p-4 rounded-2xl text-center text-xs text-slate-500">Nenhum eleitor encontrado.</div>`;
-                return;
-            }
-
-            listaParaExibir.forEach(e => {
-                const indexReal = eleitores.indexOf(e);
-                const card = document.createElement('div');
-                card.className = `card-dark p-4 rounded-2xl space-y-3`;
-                card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center gap-2.5">
-                            <input 
-                                type="checkbox" 
-                                ${e.bocaUrna ? 'checked' : ''} 
-                                onchange="alternarBocaUrna(${indexReal})" 
-                                title="Marcar para Boca de Urna"
-                                class="w-4 h-4 text-amber-500 bg-slate-900 border-slate-700 rounded focus:ring-amber-500 accent-amber-500 cursor-pointer"
-                            >
-                            <div>
-                                <h3 class="font-bold text-slate-200 text-sm leading-snug">${e.nome}</h3>
-                                <span class="text-[10px] text-slate-400"><i class="fa-solid fa-city"></i> ${e.municipio}</span>
-                            </div>
-                        </div>
-                        <span class="bg-slate-800 text-slate-400 text-[10px] px-2 py-0.5 rounded">Eleitor</span>
-                    </div>
-                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-800/80">
-                        <div class="flex flex-wrap items-center gap-1.5 text-xs">
-                            <span class="bg-slate-900 border border-slate-700 text-slate-300 px-2 py-1 rounded-md flex items-center gap-1">
-                                <i class="fa-regular fa-id-card text-blue-400"></i> ${e.cpf}
-                            </span>
-                            <span class="bg-slate-900 border border-slate-700 text-slate-300 px-2 py-1 rounded-md">
-                                Zona: <strong class="text-blue-400">${e.zona}</strong>
-                            </span>
-                            <span class="bg-emerald-950/60 border border-emerald-800 text-emerald-400 px-2 py-1 rounded-md">
-                                Seção: <strong>${e.secao}</strong>
-                            </span>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <button onclick="abrirModalEditarEleitor(${indexReal})" class="text-slate-400 hover:text-blue-400 p-1.5 transition">
-                                <i class="fa-solid fa-pen-to-square text-xs"></i>
-                            </button>
-                            <button onclick="deletarEleitor(${indexReal})" class="text-slate-500 hover:text-red-400 p-1.5 transition">
-                                <i class="fa-solid fa-trash-can text-xs"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function abrirModalMunicipio(muni) {
-            municipioAtualModal = muni;
-            const modal = document.getElementById('modalMunicipio');
-            const titulo = document.getElementById('modalTituloCidade');
-            const lista = document.getElementById('modalListaCidade');
-
-            const filtrados = eleitores
-                .map((e, idx) => ({ ...e, indexReal: idx }))
-                .filter(e => e.municipio.toLowerCase().trim() === muni.toLowerCase().trim())
-                .sort((a, b) => a.nome.localeCompare(b.nome));
-
-            titulo.innerHTML = `<i class="fa-solid fa-city text-blue-500"></i> ${muni} (${filtrados.length} eleitor/es)`;
-            
-            lista.innerHTML = '';
-            
-            if (filtrados.length === 0) {
-                lista.innerHTML = `<p class="text-xs text-slate-500 py-4 text-center">Nenhum eleitor nesta cidade.</p>`;
-            } else {
-                filtrados.forEach((e, idx) => {
-                    const item = document.createElement('div');
-                    item.className = 'pt-2.5 pb-2.5';
-                    item.innerHTML = `
-                        <div class="flex justify-between items-start gap-2">
-                            <div class="flex items-center gap-2">
-                                <input 
-                                    type="checkbox" 
-                                    ${e.bocaUrna ? 'checked' : ''} 
-                                    onchange="alternarBocaUrn
+    </script>
+</body>
+</html>
