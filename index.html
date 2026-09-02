@@ -3,233 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cacau pela Bahia - Liderança: Bruno de Oliveira</title>
-
-    <!-- Tailwind CSS CDN -->
+    <title>Cacau pela Bahia - GeoPolítico BA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Bibliotecas para geração de PDF, Excel e ZIP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
     <style>
-        html, body { height: 100%; margin: 0; padding: 0; background-color: #0b0f19; color: #f3f4f6; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-        .modal { transition: opacity 0.2s ease-in-out; }
-        .modal-hidden { opacity: 0; pointer-events: none; }
+        body { background-color: #0b0f19; color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; }
         .card-dark { background-color: #111827; border: 1px solid #1f2937; }
-        .progress-bar { background-color: #374151; }
-        .progress-fill { background-color: #10b981; }
-        .city-row { transition: all 0.2s ease; }
-        .city-row:hover { background-color: #1f2937; cursor: pointer; }
-        input, select, textarea { background-color: #1f2937 !important; color: #ffffff !important; border-color: #374151 !important; }
-        input:focus, select:focus, textarea:focus { border-color: #3b82f6 !important; outline: none; }
+        .btn-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: 0.2s; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
+<body class="p-4">
 
-    <!-- Tela Inicial / Dashboard -->
-    <div id="app" class="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
-        
-        <!-- Topo / Cabeçalho -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 bg-gray-900 p-6 rounded-2xl border border-gray-800 shadow-xl">
+    <!-- Topo -->
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-3">
+            <div class="p-2.5 bg-blue-600 rounded-xl">
+                <i class="fas fa-users text-white text-xl"></i>
+            </div>
             <div>
-                <span class="text-xs font-semibold uppercase tracking-wider text-amber-500 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
-                    Sistema GeoPolítico BA
-                </span>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-white mt-2 flex items-center gap-3">
-                    <i class="fas fa-tree text-amber-600"></i> Cacau pela Bahia
-                </h1>
-                <p class="text-sm text-gray-400 mt-1">
-                    Liderança Regional: <strong class="text-gray-200">Bruno de Oliveira</strong>
-                </p>
-            </div>
-
-            <!-- Botões de Ação Principal -->
-            <div class="flex flex-wrap items-center gap-2 w-full md:w-auto justify-start md:justify-end">
-                
-                <!-- Botão TSE Direto -->
-                <button onclick="abrirTSE()" class="flex items-center gap-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 px-3 py-2 rounded-xl text-xs font-semibold transition" title="Consultar TSE">
-                    <i class="fas fa-scale-balanced text-sm"></i> TSE
-                </button>
-
-                <!-- Botão Exportar Backup ZIP -->
-                <button onclick="exportarBackupZip()" class="flex items-center gap-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 border border-amber-500/30 px-3 py-2 rounded-xl text-xs font-semibold transition" title="Exportar Backup ZIP">
-                    <i class="fas fa-file-archive text-sm"></i> Backup .ZIP
-                </button>
-
-                <!-- Botão Restaurar Backup ZIP -->
-                <label class="flex items-center gap-2 bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 border border-purple-500/30 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition" title="Restaurar Backup ZIP">
-                    <i class="fas fa-upload text-sm"></i> Restaurar
-                    <input type="file" id="importZipInput" onchange="importarBackupZip(event)" class="hidden" accept=".zip">
-                </label>
-
-                <!-- Botão Compartilhar WhatsApp -->
-                <button onclick="compartilharWhatsApp()" class="flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 px-3 py-2 rounded-xl text-xs font-semibold transition" title="Compartilhar no WhatsApp">
-                    <i class="fab fa-whatsapp text-sm"></i> WhatsApp
-                </button>
-
+                <h1 class="font-bold text-white text-base leading-tight">Cacau pela Bahia</h1>
+                <p class="text-xs text-amber-500 font-medium">Liderança: Bruno de Oliveira</p>
             </div>
         </div>
 
-        <!-- Painel de Filtros e Busca -->
-        <div class="card-dark p-6 rounded-2xl mb-8">
-            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="w-full md:w-1/2 relative">
-                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" id="searchInput" placeholder="Buscar por Município, Líder Local ou Observações..." oninput="filtrarDados()" class="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white text-sm focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="flex items-center gap-3 w-full md:w-auto">
-                    <select id="filterRegiao" onchange="filtrarDados()" class="w-full md:w-auto px-4 py-3 rounded-xl border border-gray-700 bg-gray-800 text-white text-sm">
-                        <option value="">Todas as Regiões</option>
-                        <option value="Litoral Sul">Litoral Sul</option>
-                        <option value="Baixo Sul">Baixo Sul</option>
-                        <option value="Médio Rio de Contas">Médio Rio de Contas</option>
-                        <option value="Vale do Jequiriçá">Vale do Jequiriçá</option>
-                    </select>
-                </div>
-            </div>
+        <!-- Botões do Topo -->
+        <div class="flex items-center gap-1.5">
+            <!-- Backup Copiar -->
+            <button onclick="copiarBackup()" class="btn-icon bg-amber-600/80 hover:bg-amber-600 text-white" title="Exportar Backup">
+                <i class="fas fa-download text-sm"></i>
+            </button>
+            <!-- Backup Importar -->
+            <button onclick="restaurarBackup()" class="btn-icon bg-purple-600/80 hover:bg-purple-600 text-white" title="Importar Backup">
+                <i class="fas fa-upload text-sm"></i>
+            </button>
+            <!-- WhatsApp -->
+            <button onclick="compartilharWhatsApp()" class="btn-icon bg-emerald-600/80 hover:bg-emerald-600 text-white" title="Compartilhar WhatsApp">
+                <i class="fab fa-whatsapp text-sm"></i>
+            </button>
+            <!-- PDF -->
+            <button onclick="gerarPDF()" class="btn-icon bg-emerald-700/80 hover:bg-emerald-700 text-white" title="Gerar PDF">
+                <i class="fas fa-file-pdf text-sm"></i>
+            </button>
         </div>
-
-        <!-- Tabela / Lista de Dados -->
-        <div class="card-dark rounded-2xl overflow-hidden shadow-2xl mb-8">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-800/80 text-gray-400 text-xs font-bold uppercase tracking-wider border-b border-gray-800">
-                            <th class="p-4">Município</th>
-                            <th class="p-4">Região</th>
-                            <th class="p-4">Liderança Local</th>
-                            <th class="p-4">Status / Meta</th>
-                            <th class="p-4 text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaCorpo" class="divide-y divide-gray-800 text-sm">
-                        <!-- Conteúdo gerado dinamicamente via JS -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Scripts de Lógica Integrada -->
+    <!-- Confronto de Seção & Zona -->
+    <div class="card-dark rounded-xl p-4 mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-amber-500 font-bold text-xs tracking-wider uppercase flex items-center gap-2">
+                <i class="fas fa-filter"></i> Confronto de Seção & Zona
+            </h2>
+            <span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs px-2.5 py-1 rounded-full font-medium" id="votosCount">0/58 Votaram</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="block text-[10px] text-gray-400 mb-1 font-bold tracking-wider">FILTRAR ZONA</label>
+                <select id="selectZona" onchange="atualizarFiltros()" class="w-full bg-slate-900 border border-slate-700 text-blue-400 rounded-lg p-2 text-xs font-semibold focus:outline-none">
+                    <option value="">Todas as Zonas</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] text-gray-400 mb-1 font-bold tracking-wider">FILTRAR SEÇÃO</label>
+                <select id="selectSecao" onchange="atualizarFiltros()" class="w-full bg-slate-900 border border-slate-700 text-emerald-500 rounded-lg p-2 text-xs font-semibold focus:outline-none">
+                    <option value="">Todas as Seções</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribuição por Município -->
+    <div class="card-dark rounded-xl p-4 mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-gray-300 font-bold text-xs tracking-wider uppercase flex items-center gap-2">
+                <i class="fas fa-globe text-blue-500"></i> Distribuição por Município
+            </h2>
+            <span class="text-xs text-gray-400" id="cidadesCount">9 cidade(s)</span>
+        </div>
+
+        <div class="space-y-3 text-xs" id="listaCidades">
+            <div>
+                <div class="flex justify-between text-gray-300 mb-1"><span>Madre de Deus</span><span>38 (66%)</span></div>
+                <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden"><div class="bg-blue-600 h-full w-[66%]"></div></div>
+            </div>
+            <div>
+                <div class="flex justify-between text-gray-300 mb-1"><span>Feira de Santana</span><span>7 (12%)</span></div>
+                <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden"><div class="bg-blue-600 h-full w-[12%]"></div></div>
+            </div>
+            <div>
+                <div class="flex justify-between text-gray-300 mb-1"><span>Candeias</span><span>4 (7%)</span></div>
+                <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden"><div class="bg-blue-600 h-full w-[7%]"></div></div>
+            </div>
+            <div>
+                <div class="flex justify-between text-gray-300 mb-1"><span>Salvador</span><span>1 (2%)</span></div>
+                <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden"><div class="bg-blue-600 h-full w-[2%]"></div></div>
+            </div>
+            <div>
+                <div class="flex justify-between text-gray-300 mb-1"><span>Camaçari</span><span>1 (2%)</span></div>
+                <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden"><div class="bg-blue-600 h-full w-[2%]"></div></div>
+            </div>
+            <div>
+                <div class="flex justify-between text-gray-300 mb-1"><span>Santa Teresinha</span><span>1 (2%)</span></div>
+                <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden"><div class="bg-blue-600 h-full w-[2%]"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Eleitores Cadastrados -->
+    <div class="mb-6">
+        <div class="flex justify-between items-center mb-3">
+            <h2 class="text-gray-400 font-bold text-xs tracking-wider uppercase">Eleitores Cadastrados</h2>
+            <span class="text-xs text-gray-400" id="registrosCount">58 registro(s)</span>
+        </div>
+
+        <div class="card-dark rounded-xl p-4 mb-3">
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <h3 class="font-bold text-white text-sm">Geovanna Íris de Jesus Santana</h3>
+                    <div class="flex gap-2 mt-1">
+                        <span class="bg-slate-800 text-gray-400 text-[10px] px-2 py-0.5 rounded flex items-center gap-1">
+                            <i class="fas fa-id-card"></i> 167589470540
+                        </span>
+                        <span class="bg-slate-800 text-blue-400 text-[10px] px-2 py-0.5 rounded font-semibold">
+                            Zona: 127
+                        </span>
+                    </div>
+                </div>
+                <span class="bg-slate-800 text-gray-400 text-[10px] px-2 py-0.5 rounded">Eleitor</span>
+            </div>
+            <div class="flex justify-end gap-2 mt-3">
+                <button class="bg-slate-800 hover:bg-slate-700 text-gray-300 text-xs px-3 py-1.5 rounded-lg border border-slate-700">Marcar</button>
+                <button class="bg-slate-800 hover:bg-slate-700 text-blue-400 text-xs p-1.5 rounded-lg border border-slate-700"><i class="fas fa-pen"></i></button>
+                <button class="bg-slate-800 hover:bg-slate-700 text-red-400 text-xs p-1.5 rounded-lg border border-slate-700"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+
+        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 text-sm shadow-lg">
+            <i class="fas fa-user-plus"></i> Novo Cadastro
+        </button>
+    </div>
+
     <script>
-        // Dados Base de Exemplo
-        let dadosMunicipios = JSON.parse(localStorage.getItem('cacau_bahia_dados')) || [
-            { id: 1, nome: "Ilhéus", regiao: "Litoral Sul", lider: "Carlos Silva", meta: "80%", status: "Ativo" },
-            { id: 2, nome: "Itabuna", regiao: "Litoral Sul", lider: "Ana Santos", meta: "65%", status: "Em Andamento" },
-            { id: 3, nome: "Gandu", regiao: "Baixo Sul", lider: "Marcos Oliveira", meta: "90%", status: "Ativo" }
-        ];
-
-        function salvarStorage() {
-            localStorage.setItem('cacau_bahia_dados', JSON.stringify(dadosMunicipios));
-        }
-
-        function renderizarTabela(lista) {
-            const tbody = document.getElementById('tabelaCorpo');
-            tbody.innerHTML = '';
-
-            if (lista.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-gray-500">Nenhum registro encontrado.</td></tr>`;
-                return;
-            }
-
-            lista.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.className = 'city-row border-b border-gray-800/50';
-                tr.innerHTML = `
-                    <td class="p-4 font-semibold text-white">${item.nome}</td>
-                    <td class="p-4 text-gray-400">${item.regiao}</td>
-                    <td class="p-4 text-gray-300">${item.lider}</td>
-                    <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${item.meta} - ${item.status}</span></td>
-                    <td class="p-4 text-right">
-                        <button onclick="removerItem(${item.id})" class="text-red-400 hover:text-red-300 p-2"><i class="fas fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function filtrarDados() {
-            const busca = document.getElementById('searchInput').value.toLowerCase();
-            const regiao = document.getElementById('filterRegiao').value;
-
-            const filtrados = dadosMunicipios.filter(item => {
-                const bateBusca = item.nome.toLowerCase().includes(busca) || item.lider.toLowerCase().includes(busca);
-                const bateRegiao = regiao === "" || item.regiao === regiao;
-                return bateBusca && bateRegiao;
-            });
-
-            renderizarTabela(filtrados);
-        }
-
-        function removerItem(id) {
-            if (confirm("Deseja realmente remover este item?")) {
-                dadosMunicipios = dadosMunicipios.filter(item => item.id !== id);
-                salvarStorage();
-                filtrarDados();
-            }
-        }
-
-        // Função do Botão TSE
-        function abrirTSE() {
-            window.open("https://www.tse.jus.br/servicos-eleitorais/titulo-e-local-de-votacao/consulta-por-nome", "_blank");
-        }
-
-        // Função do Botão WhatsApp
-        function compartilharWhatsApp() {
-            const msg = encodeURIComponent("Acesse o sistema Cacau pela Bahia - GeoPolítico BA: https://brunobrownperfil2-eng.github.io/cacau-pela-Bahia/");
-            window.open(`https://api.whatsapp.com/send?text=${msg}`, "_blank");
-        }
-
-        // Função de Exportar Backup em .ZIP
-        async function exportarBackupZip() {
-            if (typeof JSZip === "undefined") {
-                alert("Aguarde a biblioteca carregar totalmente.");
-                return;
-            }
-            const zip = new JSZip();
+        // Exportar Backup via Copia/Area de Transferencia (Alert igual ao print)
+        function copiarBackup() {
             const dados = {};
             for (let i = 0; i < localStorage.length; i++) {
                 const chave = localStorage.key(i);
                 dados[chave] = localStorage.getItem(chave);
             }
-            zip.file("backup_cacau_bahia.json", JSON.stringify(dados, null, 2));
-            const conteudo = await zip.generateAsync({ type: "blob" });
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(conteudo);
-            a.download = `backup_cacau_bahia_${new Date().toISOString().slice(0,10)}.zip`;
-            a.click();
+            const stringDados = JSON.stringify(dados);
+            
+            navigator.clipboard.writeText(stringDados).then(() => {
+                alert("Código de Backup COPIADO! Cole este código no Safari usando o botão 'Importar'.");
+            }).catch(() => {
+                prompt("Copie o código de backup abaixo:", stringDados);
+            });
         }
 
-        // Função de Importar Backup em .ZIP
-        async function importarBackupZip(event) {
-            const arquivo = event.target.files[0];
-            if (!arquivo) return;
+        // Restaurar Backup via Prompt/Cole
+        function restaurarBackup() {
+            const codigo = prompt("Cole aqui o código de backup:");
+            if (!codigo) return;
             try {
-                const zip = await JSZip.loadAsync(arquivo);
-                const jsonFile = zip.file("backup_cacau_bahia.json");
-                if (!jsonFile) {
-                    alert("Arquivo de backup inválido!");
-                    return;
-                }
-                const texto = await jsonFile.async("string");
-                const dados = JSON.parse(texto);
-                Object.keys(dados).forEach(chave => localStorage.setItem(chave, dados[chave]));
-                alert("Backup restaurado com sucesso!");
+                const dados = JSON.parse(codigo);
+                Object.keys(dados).forEach(chave => {
+                    localStorage.setItem(chave, dados[chave]);
+                });
+                alert("Dados restaurados com sucesso!");
                 location.reload();
             } catch (e) {
-                alert("Erro ao ler o arquivo de backup.");
+                alert("Código de backup inválido.");
             }
         }
 
-        // Inicialização
-        document.addEventListener("DOMContentLoaded", () => {
-            renderizarTabela(dadosMunicipios);
-        });
+        // Compartilhar WhatsApp
+        function compartilharWhatsApp() {
+            const msg = encodeURIComponent("Acesse o sistema Cacau pela Bahia - GeoPolítico BA: https://brunobrownperfil2-eng.github.io/cacau-pela-Bahia/");
+            window.open(`https://api.whatsapp.com/send?text=${msg}`, "_blank");
+        }
+
+        function gerarPDF() {
+            alert("Gerando relatório PDF...");
+        }
+
+        function atualizarFiltros() {
+            // Lógica de filtragem das listas
+        }
     </script>
 </body>
 </html>
