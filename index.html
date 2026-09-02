@@ -27,16 +27,45 @@
                 <p class="text-xs text-amber-500 font-medium">Liderança: Bruno de Oliveira</p>
             </div>
         </div>
+        // Função para Exportar/Copiar Backup (Imagem 2)
+function exportarBackup() {
+    const dados = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const chave = localStorage.key(i);
+        dados[chave] = localStorage.getItem(chave);
+    }
+    const stringDados = JSON.stringify(dados);
+    
+    // Tenta copiar direto para a área de transferência
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(stringDados).then(() => {
+            alert("Código de Backup COPIADO! Cole este código no Safari usando o botão 'Importar'.");
+        }).catch(() => {
+            prompt("Copie o Código de Backup abaixo:", stringDados);
+        });
+    } else {
+        prompt("Copie o Código de Backup abaixo:", stringDados);
+    }
+}
 
-        <!-- Botões do Topo -->
-        <div class="flex items-center gap-1.5">
-            <!-- Backup Copiar -->
-            <button onclick="copiarBackup()" class="btn-icon bg-amber-600/80 hover:bg-amber-600 text-white" title="Exportar Backup">
-                <i class="fas fa-download text-sm"></i>
-            </button>
-            <!-- Backup Importar -->
-            <button onclick="restaurarBackup()" class="btn-icon bg-purple-600/80 hover:bg-purple-600 text-white" title="Importar Backup">
-                <i class="fas fa-upload text-sm"></i>
+// Função para Importar/Restaurar Backup (Imagem 1)
+function importarBackup() {
+    const codigo = prompt("Cole aqui o Código de Backup gerado no Koder:");
+    if (!codigo) return;
+    
+    try {
+        const dados = JSON.parse(codigo);
+        Object.keys(dados).forEach(chave => {
+            localStorage.setItem(chave, dados[chave]);
+        });
+        alert("Dados restaurados com sucesso!");
+        location.reload();
+    } catch (e) {
+        alert("Código de backup inválido!");
+    }
+}
+
+
             </button>
             <!-- WhatsApp -->
             <button onclick="compartilharWhatsApp()" class="btn-icon bg-emerald-600/80 hover:bg-emerald-600 text-white" title="Compartilhar WhatsApp">
