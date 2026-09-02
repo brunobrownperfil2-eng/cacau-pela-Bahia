@@ -274,7 +274,7 @@
         }
 
         function abrirConsultaTSE() {
-            window.location.href = "https://www.tse.jus.br/servicos-eleitorais/titulo-e-local-de-votacao/titulo-e-local-de-votacao";
+            window.open("https://www.tse.jus.br/servicos-eleitorais/titulo-e-local-de-votacao/titulo-e-local-de-votacao", "_blank");
         }
 
         function importarCodigoBackup() {
@@ -458,14 +458,16 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
+            // Cabeçalho do PDF
             doc.setFontSize(16);
-            doc.setTextColor(30, 58, 138);
+            doc.setTextColor(30, 58, 138); // Azul
             doc.text(`Cacau pela Bahia - ${tituloAtualRelatorio}`, 14, 15);
 
             doc.setFontSize(10);
-            doc.setTextColor(217, 119, 6);
+            doc.setTextColor(217, 119, 6); // Amarelo/Laranja
             doc.text(`Liderança: Bruno de Oliveira | Total: ${listaAtualRelatorio.length} registro(s)`, 14, 22);
 
+            // Mapeia os dados da tabela
             const dadosTabela = listaAtualRelatorio.map((el, i) => [
                 i + 1,
                 el.nome,
@@ -475,6 +477,7 @@
                 el.municipio
             ]);
 
+            // Gera a tabela formatada
             doc.autoTable({
                 startY: 27,
                 head: [['#', 'Nome Completo', 'CPF / Título', 'Zona', 'Seção', 'Município']],
@@ -484,6 +487,7 @@
                 styles: { fontSize: 8, cellPadding: 3 }
             });
 
+            // Converte o PDF para Arquivo e tenta abrir no Compartilhamento / WhatsApp do iOS
             const blobPDF = doc.output('blob');
             const filePDF = new File([blobPDF], `Relatorio_Cacau.pdf`, { type: 'application/pdf' });
 
@@ -500,6 +504,7 @@
                 }
             }
 
+            // Caso o iOS bloqueie o compartilhamento direto, força o download do PDF
             doc.save(`Relatorio_Cacau.pdf`);
         }
 
@@ -697,59 +702,4 @@
                                 <input 
                                     type="checkbox" 
                                     ${e.bocaUrna ? 'checked' : ''} 
-                                    onchange="alternarBocaUrna(${e.indexReal})" 
-                                    title="Marcar para Boca de Urna"
-                                    class="w-3.5 h-3.5 text-amber-500 bg-slate-900 border-slate-700 rounded accent-amber-500 cursor-pointer"
-                                >
-                                <p class="text-xs font-bold text-slate-100">${idx + 1}. ${e.nome}</p>
-                            </div>
-                            <div class="flex items-center gap-1 whitespace-nowrap">
-                                <button onclick="abrirModalEditarEleitor(${e.indexReal})" class="text-slate-400 hover:text-blue-400 p-1 transition" title="Editar">
-                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
-                                </button>
-                                <button onclick="deletarEleitor(${e.indexReal})" class="text-slate-500 hover:text-red-400 p-1 transition" title="Excluir">
-                                    <i class="fa-solid fa-trash-can text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between mt-1.5 pl-5">
-                            <div class="flex items-center gap-2 text-[10px] text-slate-400">
-                                <span class="bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">Título: ${e.cpf}</span>
-                                <span>Zona: <strong class="text-blue-400">${e.zona}</strong></span>
-                                <span>Seção: <strong class="text-emerald-400">${e.secao}</strong></span>
-                            </div>
-                        </div>
-                    `;
-                    lista.appendChild(item);
-                });
-            }
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function fecharModalMunicipio() {
-            municipioAtualModal = null;
-            document.getElementById('modalMunicipio').classList.add('hidden');
-        }
-
-        function abrirModalNovoCadastro() {
-            document.getElementById('modalNovoCadastro').classList.remove('hidden');
-            document.getElementById('modalNovoCadastro').classList.add('flex');
-        }
-
-        function fecharModalNovoCadastro() {
-            document.getElementById('modalNovoCadastro').classList.add('hidden');
-        }
-
-        function atualizarTela() {
-            ordenarEleitores();
-            preencherFiltrosSelects();
-            renderizarMunicipios();
-            filtrarEleitores();
-        }
-
-        atualizarTela();
-    </script>
-</body>
-</html>
+                                    onchange="alternarBocaUrn
